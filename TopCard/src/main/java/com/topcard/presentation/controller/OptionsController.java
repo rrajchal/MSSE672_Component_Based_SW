@@ -1,7 +1,6 @@
 package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.view.AddPlayerView;
@@ -11,6 +10,8 @@ import com.topcard.presentation.view.UpdateView;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.Window;
@@ -31,6 +32,8 @@ import java.util.Random;
  * </p>
  */
 public class OptionsController {
+
+    private static final Logger logger = LogManager.getLogger(OptionsController.class);
 
     private final OptionsView optionsView;
     private final JDesktopPane desktopPane;
@@ -58,7 +61,7 @@ public class OptionsController {
      * @param username the username of the authenticated player
      */
     private void initController(String username) {
-        Debug.info("Initializing Option Controller");
+        logger.info("Initializing Option Controller");
         PlayerManager playerManager = new PlayerManager();
         player = playerManager.getPlayerByUsername(username);
 
@@ -88,7 +91,7 @@ public class OptionsController {
                 Stage stage = new Stage();
                 gameView.start(stage);
             } catch (Exception e) {
-                Debug.error("Failed to start the game view: " + e.getMessage());
+                logger.error("Failed to start the game view: " + e.getMessage());
                 JOptionPane.showMessageDialog(optionsView, "Failed to start the game view.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });

@@ -1,6 +1,5 @@
 package com.topcard.presentation.view;
 
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.presentation.controller.GameController;
 import javafx.application.Platform;
@@ -9,6 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,9 @@ import java.util.Objects;
  * </p>
  */
 public class GameView {
+
+    private static final Logger logger = LogManager.getLogger(GameView.class);
+
     private final List<Player> players;
 
     /**
@@ -43,10 +47,10 @@ public class GameView {
      * @throws Exception if there is an issue loading the FXML file
      */
     public void start(Stage primaryStage) throws Exception {
-        Debug.info("Starting GameView");
+        logger.info("Starting GameView");
         try {
             String fxmlPath = "/com/topcard/presentation/GameView.fxml";
-            Debug.info("Attempting to load FXML from: " + fxmlPath);
+            logger.info("Attempting to load FXML from: " + fxmlPath);
 
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlPath), "FXML resource not found"));
@@ -69,7 +73,7 @@ public class GameView {
 
             primaryStage.show();
         } catch (Exception e) {
-            Debug.error("Failed to load FXML file: " + e.getMessage());
+            logger.error("Failed to load FXML file: " + e.getMessage());
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
@@ -9,6 +8,8 @@ import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.LoginView;
 import com.topcard.presentation.view.OptionsView;
 import com.topcard.presentation.view.SignUpView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -26,6 +27,8 @@ import javax.swing.*;
  * </p>
  */
 public class LoginController extends JFrame {
+
+    private static final Logger logger = LogManager.getLogger(LoginController.class);
 
     private final LoginView loginView;
     private final JDesktopPane desktopPane;
@@ -45,7 +48,7 @@ public class LoginController extends JFrame {
      * Initializes the controller by setting up the action listeners.
      */
     private void initController() {
-        Debug.info("Initializing Login Controller");
+        logger.info("Initializing Login Controller");
         // for login button
         loginView.getLoginButton().addActionListener(e -> handleLogin());
 

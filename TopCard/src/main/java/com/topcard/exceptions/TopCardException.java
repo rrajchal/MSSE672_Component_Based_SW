@@ -1,6 +1,7 @@
 package com.topcard.exceptions;
 
-import com.topcard.debug.Debug;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.JOptionPane;
 
@@ -14,6 +15,8 @@ import javax.swing.JOptionPane;
  */
 public class TopCardException extends RuntimeException {
 
+    private static final Logger logger = LogManager.getLogger(TopCardException.class);
+
     /**
      * Constructs a new TopCardException with the specified detail message.
      *
@@ -21,7 +24,7 @@ public class TopCardException extends RuntimeException {
      */
     public TopCardException(String message) {
         super(message);
-        Debug.error(message);
+        logger.error(message);
         displayMessageDialog(message);
     }
 
@@ -33,7 +36,7 @@ public class TopCardException extends RuntimeException {
      */
     public TopCardException(String message, Throwable cause) {
         super(message, cause);
-        Debug.error(message + "\n" + cause.getMessage());
+        logger.error(message + "\n" + cause.getMessage());
         displayMessageDialog(message + "\n" + cause.getMessage());
     }
 
@@ -44,7 +47,7 @@ public class TopCardException extends RuntimeException {
      */
     public TopCardException(Throwable cause) {
         super(cause);
-        Debug.error(cause.getMessage());
+        logger.error(cause.getMessage());
         displayMessageDialog(cause.getMessage());
     }
 

@@ -1,8 +1,9 @@
 package com.topcard.service.player;
 
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.exceptions.TopCardException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.BufferedWriter;
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
  */
 public class PlayerService implements IPlayerService {
 
+    private static final Logger logger = LogManager.getLogger(PlayerService.class);
+
     private static final Path dataFilePath;
 
     static {
@@ -58,10 +61,10 @@ public class PlayerService implements IPlayerService {
             player.setUsername(player.getUsername().toLowerCase());
             player.setPassword(encryptPassword(player.getPassword())); // Encrypt the password
             register(player);
-            Debug.info("Player added: " + player);
+            logger.info("Player added: " + player);
             return true;
         } else {
-            Debug.warn("Player already exists. No player added.");
+            logger.warn("Player already exists. No player added.");
             return false;
         }
     }
@@ -131,7 +134,7 @@ public class PlayerService implements IPlayerService {
                 })
                 .collect(Collectors.toList());
         writeLinesToFile(lines);
-        Debug.info("Player's points updated: " + player);
+        logger.info("Player's points updated: " + player);
     }
 
     @Override
@@ -152,7 +155,7 @@ public class PlayerService implements IPlayerService {
                 })
                 .collect(Collectors.toList());
         writeLinesToFile(lines);
-        Debug.info("Player updated: " + player);
+        logger.info("Player updated: " + player);
     }
 
     @Override

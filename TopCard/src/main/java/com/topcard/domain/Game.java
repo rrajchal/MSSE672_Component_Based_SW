@@ -1,6 +1,7 @@
 package com.topcard.domain;
 
-import com.topcard.debug.Debug;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,6 +22,8 @@ public class Game implements Serializable {
     @Serial
     private static final long serialVersionUID = 3L;
 
+    private static final Logger logger = LogManager.getLogger(Game.class);
+
     private final Deck deck;
     private final List<Player> players;
 
@@ -30,7 +33,7 @@ public class Game implements Serializable {
      * @param players the list of players participating in the game
      */
     public Game(List<Player> players) {
-        Debug.info("Game created.");
+        logger.info("Game created.");
         this.deck = new Deck();
         this.players = players;
     }
@@ -51,7 +54,7 @@ public class Game implements Serializable {
      */
     public void displayWinners(List<Player> winners) {
         for (Player winner : winners) {
-            System.out.println("Winner " + winner.getFirstName() + " " + winner.getLastName()
+            logger.info("Winner " + winner.getFirstName() + " " + winner.getLastName()
                     + " has " + winner.getHandValue());
         }
     }
@@ -83,9 +86,9 @@ public class Game implements Serializable {
      */
     public void showHand() {
         for (Player player : players) {
-            Debug.info("Player " + player.getFirstName() + " has ");
+            logger.info("Player " + player.getFirstName() + " has ");
             player.showHand();
-            Debug.info("Total Score: " + player.getHandValue());
+            logger.info("Total Score: " + player.getHandValue());
         }
     }
 

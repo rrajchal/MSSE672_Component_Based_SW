@@ -1,11 +1,12 @@
 package com.topcard.app;
 
-import com.topcard.debug.Debug;
 import com.topcard.exceptions.TopCardException;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.view.LoginView;
 import com.topcard.presentation.controller.LoginController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -28,6 +29,8 @@ import java.util.Properties;
  */
 public class MainApp {
 
+    private static final Logger logger = LogManager.getLogger(MainApp.class);
+
     private static final JDesktopPane desktopPane = new JDesktopPane(); // Main desktop pane
 
     /**
@@ -37,9 +40,6 @@ public class MainApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Copies config file and Set debug mode based on configuration file
-        setDebugModeFromConfig();
-
         // Copies Data file to local
         createDataDirAndFile();
 
@@ -101,8 +101,8 @@ public class MainApp {
         // Add action listeners to the menu items
         loginMenuItem.addActionListener(e -> openLogin());
         exitMenuItem.addActionListener(e -> System.exit(0));
-        debugTrueMenuItem.addActionListener(e -> Debug.setDebugMode(true));
-        debugFalseMenuItem.addActionListener(e -> Debug.setDebugMode(false));
+        debugTrueMenuItem.addActionListener(e -> logger.warn("Has not impletemented debug level in GUI"));
+        debugFalseMenuItem.addActionListener(e -> logger.warn("Has not impletemented debug level in GUI"));
         aboutGameMenuItem.addActionListener(e -> showAboutGame());
 
         // Initialize and add the login view as an internal frame
@@ -122,7 +122,7 @@ public class MainApp {
                 try {
                     frame.setSelected(true);
                 } catch (java.beans.PropertyVetoException e) {
-                    Debug.error("Error setting selected frame: " + e.getMessage());
+                    logger.error("Error setting selected frame: " + e.getMessage());
                 }
                 return;
             }
@@ -132,35 +132,6 @@ public class MainApp {
         LoginView loginView = new LoginView();
         new LoginController(loginView, desktopPane);
         InternalFrame.addInternalFrame(desktopPane, "Login", loginView.getLoginPanel(), 400, 300, false);
-    }
-
-    /**
-     * Sets the debug mode based on the value in the config.properties file.
-     * Set debug.mode=true for displaying debug message
-     * Set debug.mode=false for not displaying debug message
-     * <p>
-     * This method reads the debug mode setting from the config.properties file and
-     * configures the Debug class accordingly. If the properties file is not found or
-     * an error occurs while reading the file, the debug mode is not set.
-     * </p>
-     */
-    private static void setDebugModeFromConfig() {
-        ensureConfigFileExists();
-        Properties properties = new Properties();
-        Path configFilePath = Paths.get("config", "config.properties");
-
-        try (InputStream input = Files.newInputStream(configFilePath)) {
-            // Load the properties file
-            properties.load(input);
-
-            // Set debug mode based on the property
-            boolean debugMode = Boolean.parseBoolean(properties.getProperty("debug.mode"));
-            Debug.setDebugMode(debugMode);
-        } catch (IOException ex) {
-            Debug.setDebugMode(true);
-            Debug.error("Error reading config.properties: " + ex.toString());
-            Debug.setDebugMode(false);
-        }
     }
 
     /**
@@ -181,14 +152,14 @@ public class MainApp {
             if (Files.notExists(configFilePath)) {
                 try (InputStream input = MainApp.class.getClassLoader().getResourceAsStream("config.properties")) {
                     if (input == null) {
-                        Debug.error("Sorry, unable to find config.properties");
+                        logger.error("Sorry, unable to find config.properties");
                         return;
                     }
                     Files.copy(input, configFilePath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
         } catch (IOException ex) {
-            Debug.error("Error creating config directory or copying config.properties: " + ex.toString());
+            logger.error("Error creating config directory or copying config.properties: " + ex.toString());
         }
     }
 
@@ -212,7 +183,7 @@ public class MainApp {
             if (Files.notExists(dataFilePath)) {
                 try (InputStream dataInput = MainApp.class.getClassLoader().getResourceAsStream(filePath)) {
                     if (dataInput == null) {
-                        Debug.error("Unable to find data/players.csv");
+                        logger.error("Unable to find data/players.csv");
                         return;
                     }
                     Files.createDirectories(dataFilePath.getParent());

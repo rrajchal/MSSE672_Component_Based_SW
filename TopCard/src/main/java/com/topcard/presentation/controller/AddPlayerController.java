@@ -1,11 +1,12 @@
 package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.AddPlayerView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,8 @@ import javax.swing.JOptionPane;
  * </p>
  */
 public class AddPlayerController {
+
+    private static final Logger logger = LogManager.getLogger(AddPlayerController.class);
 
     private final AddPlayerView addPlayerView;
     private final PlayerManager playerManager;
@@ -42,7 +45,7 @@ public class AddPlayerController {
      * Initializes the controller by setting up the action listeners.
      */
     private void initController() {
-        Debug.info("Initializing AddPlayer Controller");
+        logger.info("Initializing AddPlayer Controller");
         addPlayerView.getAddPlayerButton().addActionListener(e -> handleAddPlayer());
     }
 

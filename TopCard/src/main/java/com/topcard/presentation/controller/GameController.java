@@ -2,14 +2,14 @@ package com.topcard.presentation.controller;
 
 import com.topcard.business.GameManager;
 import com.topcard.business.PlayerManager;
-import com.topcard.debug.Debug;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
  * </p>
  */
 public class GameController {
+
+    private static final Logger logger = LogManager.getLogger(GameController.class);
 
     @FXML
     private ImageView player1C1, player1C2, player1C3;
@@ -93,7 +95,7 @@ public class GameController {
      */
     @FXML
     private void startButtonPressed() {
-        Debug.info("Start Game button pressed");
+        logger.info("Start Game button pressed");
         // Initialize GameManager with the players
         gameManager = new GameManager(players);
         boolean valid = checkForBetAmount();
@@ -134,7 +136,7 @@ public class GameController {
         if (pattern.matcher(betAmountEntered).matches()) {
             winnerTextField.setText("");
             betAmount = Integer.parseInt(betAmountEntered);
-            Debug.info("Bet amount: " + betAmountEntered);
+            logger.info("Bet amount: " + betAmountEntered);
             return true;
         } else {
             winnerTextField.setStyle("-fx-text-fill: red;");
@@ -178,13 +180,13 @@ public class GameController {
      */
     private void setCardImage(ImageView imageView, Card card) {
         String imagePath = "/images/" + card.toString() + ".JPG";
-        Debug.info("Attempting to load image from path: " + imagePath);
+        logger.info("Attempting to load image from path: " + imagePath);
         try {
             Image cardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
-            Debug.info("Successfully loaded image: " + imagePath);
+            logger.info("Successfully loaded image: " + imagePath);
             imageView.setImage(cardImage);
         } catch (Exception e) {
-            Debug.error("Failed to load image: " + imagePath);
+            logger.error("Failed to load image: " + imagePath);
             imageView.setImage(null); // Optionally set a placeholder or default image
         }
     }

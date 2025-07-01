@@ -1,6 +1,7 @@
 package com.topcard.domain;
 
-import com.topcard.debug.Debug;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -20,6 +21,8 @@ public class Deck implements Serializable {
     @Serial
     private static final long serialVersionUID = 2L;
 
+    private static final Logger logger = LogManager.getLogger(Deck.class);
+
     private final Card[] cards; // There will be exactly 52 cards
     /**
      * The index of the next card to be dealt from the deck. This variable tacks the position of the next card to be drawn.
@@ -37,7 +40,7 @@ public class Deck implements Serializable {
      * Constructs a new Deck with 52 cards, including all suits and ranks.
      */
     public Deck() {
-        Debug.info("Deck created.");
+        logger.info("Deck created.");
         cards = new Card[NUM_OF_CARDS_IN_DECK];
         currentIndex = 0;
         // Create the deck

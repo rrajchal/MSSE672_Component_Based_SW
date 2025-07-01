@@ -1,11 +1,12 @@
 package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.UpdateView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.Color;
 import java.time.LocalDate;
@@ -24,6 +25,8 @@ import javax.swing.*;
  * </p>
  */
 public class UpdateController {
+
+    private static final Logger logger = LogManager.getLogger(UpdateController.class);
 
     private final UpdateView updateView;
     private final PlayerManager playerManager;
@@ -50,7 +53,7 @@ public class UpdateController {
      * Initializes the controller by setting up the action listeners.
      */
     private void initController() {
-        Debug.info("Initializing UpdateController");
+        logger.info("Initializing UpdateController");
         if (isAdmin) {
             updateView.getSearchButton().addActionListener(e -> handleSearch());
         } else {

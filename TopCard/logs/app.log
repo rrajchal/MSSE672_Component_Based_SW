@@ -46,3 +46,73 @@
 [20:58:13.185] [main] DEBUG com.topcard.Main (Main.java:12) - i = 3
 [20:58:13.185] [main] DEBUG com.topcard.Main (Main.java:12) - i = 4
 [20:58:13.185] [main] DEBUG com.topcard.Main (Main.java:12) - i = 5
+[21:13:52.049] [main] INFO  com.topcard.Main (Main.java:11) - Hello and welcome!
+[21:13:52.054] [main] DEBUG com.topcard.Main (Main.java:13) - i = 1
+[21:13:52.054] [main] DEBUG com.topcard.Main (Main.java:13) - i = 2
+[21:13:52.054] [main] DEBUG com.topcard.Main (Main.java:13) - i = 3
+[21:13:52.054] [main] DEBUG com.topcard.Main (Main.java:13) - i = 4
+[21:13:52.054] [main] DEBUG com.topcard.Main (Main.java:13) - i = 5
+[21:14:25.344] [main] INFO  com.topcard.Main (Main.java:12) - Hello and welcome!
+[21:14:25.344] [Thread-0] INFO  com.topcard.Main (Main.java:11) - Running inside another thread to test debug messages with thread number
+[21:14:25.349] [main] DEBUG com.topcard.Main (Main.java:14) - i = 1
+[21:14:25.349] [main] DEBUG com.topcard.Main (Main.java:14) - i = 2
+[21:14:25.349] [main] DEBUG com.topcard.Main (Main.java:14) - i = 3
+[21:14:25.350] [main] DEBUG com.topcard.Main (Main.java:14) - i = 4
+[21:14:25.350] [main] DEBUG com.topcard.Main (Main.java:14) - i = 5
+[21:14:36.857] [Thread-0] INFO  com.topcard.Main (Main.java:11) - Running inside another thread to test debug messages with thread number
+[21:14:36.857] [Thread-1] INFO  com.topcard.Main (Main.java:12) - Running inside another thread to test debug messages with thread number
+[21:14:36.857] [main] INFO  com.topcard.Main (Main.java:13) - Hello and welcome!
+[21:14:36.863] [main] DEBUG com.topcard.Main (Main.java:15) - i = 1
+[21:14:36.863] [main] DEBUG com.topcard.Main (Main.java:15) - i = 2
+[21:14:36.863] [main] DEBUG com.topcard.Main (Main.java:15) - i = 3
+[21:14:36.863] [main] DEBUG com.topcard.Main (Main.java:15) - i = 4
+[21:14:36.864] [main] DEBUG com.topcard.Main (Main.java:15) - i = 5
+[21:33:42.625] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[21:33:55.583] [AWT-EventQueue-0] INFO  com.topcard.presentation.controller.SignUpController (SignUpController.java:52) - Initializing SignUp Controller
+[21:34:12.527] [AWT-EventQueue-0] INFO  com.topcard.service.player.PlayerService (PlayerService.java:64) - Player added: Player{playerId=5, username='a', firstName='a', lastName='a', dateOfBirth=2020-10-10, age=4, points=100, isAdmin=false, isLoggedIn=false}
+[21:34:20.874] [AWT-EventQueue-0] INFO  com.topcard.presentation.controller.OptionsController (OptionsController.java:64) - Initializing Option Controller
+[21:34:23.178] [JavaFX Application Thread] INFO  com.topcard.presentation.view.GameView (GameView.java:50) - Starting GameView
+[21:34:23.179] [JavaFX Application Thread] INFO  com.topcard.presentation.view.GameView (GameView.java:53) - Attempting to load FXML from: /com/topcard/presentation/GameView.fxml
+[21:34:25.652] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:98) - Start Game button pressed
+[21:34:25.654] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:25.654] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:25.655] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:25.655] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:25.656] [JavaFX Application Thread] INFO  com.topcard.domain.Game (Game.java:36) - Game created.
+[21:34:25.657] [JavaFX Application Thread] INFO  com.topcard.domain.Deck (Deck.java:43) - Deck created.
+[21:34:30.344] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:98) - Start Game button pressed
+[21:34:30.344] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:30.345] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:30.345] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:30.345] [JavaFX Application Thread] WARN  com.topcard.service.player.PlayerService (PlayerService.java:67) - Player already exists. No player added.
+[21:34:30.346] [JavaFX Application Thread] INFO  com.topcard.domain.Game (Game.java:36) - Game created.
+[21:34:30.346] [JavaFX Application Thread] INFO  com.topcard.domain.Deck (Deck.java:43) - Deck created.
+[21:34:30.346] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:139) - Bet amount: 1
+[21:34:30.348] [JavaFX Application Thread] INFO  com.topcard.service.player.PlayerService (PlayerService.java:137) - Player's points updated: Player{playerId=3, username='michael', firstName='Michael', lastName='Smith', dateOfBirth=1985-11-25, age=39, points=119, isAdmin=false, isLoggedIn=false}
+[21:34:30.348] [JavaFX Application Thread] INFO  com.topcard.service.player.PlayerService (PlayerService.java:137) - Player's points updated: Player{playerId=2, username='donald', firstName='SuperDonald', lastName='Duck', dateOfBirth=1995-06-15, age=30, points=79, isAdmin=false, isLoggedIn=false}
+[21:34:30.349] [JavaFX Application Thread] INFO  com.topcard.service.player.PlayerService (PlayerService.java:137) - Player's points updated: Player{playerId=4, username='rajesh', firstName='Rajesh', lastName='Rajchal', dateOfBirth=1980-04-10, age=45, points=91, isAdmin=false, isLoggedIn=false}
+[21:34:30.349] [JavaFX Application Thread] INFO  com.topcard.service.player.PlayerService (PlayerService.java:137) - Player's points updated: Player{playerId=5, username='a', firstName='a', lastName='a', dateOfBirth=2020-10-10, age=4, points=101, isAdmin=false, isLoggedIn=false}
+[21:34:30.349] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/SEVEN OF CLUBS.JPG
+[21:34:30.350] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/SEVEN OF CLUBS.JPG
+[21:34:30.350] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/QUEEN OF HEARTS.JPG
+[21:34:30.350] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/QUEEN OF HEARTS.JPG
+[21:34:30.351] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/KING OF DIAMONDS.JPG
+[21:34:30.351] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/KING OF DIAMONDS.JPG
+[21:34:30.351] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/ACE OF SPADES.JPG
+[21:34:30.351] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/ACE OF SPADES.JPG
+[21:34:30.351] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/TWO OF SPADES.JPG
+[21:34:30.352] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/TWO OF SPADES.JPG
+[21:34:30.352] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/ACE OF HEARTS.JPG
+[21:34:30.352] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/ACE OF HEARTS.JPG
+[21:34:30.352] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/SIX OF SPADES.JPG
+[21:34:30.352] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/SIX OF SPADES.JPG
+[21:34:30.352] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/THREE OF DIAMONDS.JPG
+[21:34:30.353] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/THREE OF DIAMONDS.JPG
+[21:34:30.353] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/JACK OF CLUBS.JPG
+[21:34:30.353] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/JACK OF CLUBS.JPG
+[21:34:30.353] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/EIGHT OF CLUBS.JPG
+[21:34:30.353] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/EIGHT OF CLUBS.JPG
+[21:34:30.353] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/KING OF CLUBS.JPG
+[21:34:30.354] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/KING OF CLUBS.JPG
+[21:34:30.354] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/TEN OF DIAMONDS.JPG
+[21:34:30.354] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/TEN OF DIAMONDS.JPG

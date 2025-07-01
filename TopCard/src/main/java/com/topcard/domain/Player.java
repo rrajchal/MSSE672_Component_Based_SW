@@ -1,6 +1,7 @@
 package com.topcard.domain;
 
-import com.topcard.debug.Debug;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -23,6 +24,8 @@ public class Player implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 4L;
+
+    private static final Logger logger = LogManager.getLogger(Player.class);
 
     private int playerId;
     private String username;
@@ -188,9 +191,9 @@ public class Player implements Serializable {
     public void showHand() {
         for (Card card : hand) {
             if (card != null) {
-                System.out.println("   " + card);
+                logger.info("   " + card);
             } else {
-                Debug.error("Error: There is no card");
+                logger.error("Error: There is no card");
             }
         }
     }

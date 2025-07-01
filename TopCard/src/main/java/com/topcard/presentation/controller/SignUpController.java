@@ -1,11 +1,12 @@
 package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
-import com.topcard.debug.Debug;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.SignUpView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -27,6 +28,8 @@ import javax.swing.JOptionPane;
  */
 public class SignUpController {
 
+    private static final Logger logger = LogManager.getLogger(SignUpController.class);
+
     private final SignUpView signUpView;
     private final JFrame loginFrame;
 
@@ -46,7 +49,7 @@ public class SignUpController {
      * Initializes the controller by setting up the action listeners.
      */
     private void initController() {
-        Debug.info("Initializing SignUp Controller");
+        logger.info("Initializing SignUp Controller");
         signUpView.getSignUpButton().addActionListener(e -> handleSignUp());
         // If SignUp view is closed, make the login View active again.
         signUpView.addWindowListener(new WindowAdapter() {
