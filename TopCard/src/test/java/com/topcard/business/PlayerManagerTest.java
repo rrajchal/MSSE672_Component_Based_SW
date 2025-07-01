@@ -69,7 +69,7 @@ public class PlayerManagerTest {
     public void testChangePoints() {
         Player player = generatePlayers().get(0);
         playerManager.addPlayer(player);
-        playerManager.changePoints(player.getPlayerId(), 10);
+        playerManager.changePoints(player.getPlayerId(), 110);
         assertEquals(110, playerManager.retrievePointForPlayer(player.getPlayerId()));
     }
 
@@ -127,7 +127,7 @@ public class PlayerManagerTest {
         playerManager.addPlayer(player);
         playerManager.changePoints(player.getPlayerId(), 100);
         int points = playerManager.retrievePointForPlayer(player.getPlayerId());
-        assertEquals(200, points);
+        assertEquals(100, points);
     }
 
     @Test
