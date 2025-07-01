@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
  * This exception is used to handle specific error scenarios in the TopCard application.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 12/13/2024
- * Subject: MSSE 670 Object Oriented Software Construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  */
 public class TopCardException extends RuntimeException {
 

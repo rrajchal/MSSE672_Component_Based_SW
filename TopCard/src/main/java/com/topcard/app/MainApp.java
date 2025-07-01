@@ -22,8 +22,8 @@ import java.util.Properties;
  * It also configures the debug mode based on the settings in the config.properties file.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 12/13/2024
- * Subject: MSSE 670 Object Oriented Software Construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
 public class MainApp {

@@ -12,8 +12,8 @@ import java.util.Collections;
  * It provides methods to shuffle the deck and deal a card from it.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 10/27/2024
- * Subject: MSSE 670 Object Oriented Software construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  */
 public class Deck implements Serializable {
 

@@ -9,8 +9,8 @@ import java.util.Objects;
  * It is immutable, meaning once it is created, its suit and rank cannot be changed.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 11/03/2024
- * Subject: MSSE 670 Object Oriented Software construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  */
 public class Card implements Serializable {
 

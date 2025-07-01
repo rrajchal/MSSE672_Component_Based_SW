@@ -5,8 +5,8 @@ package com.topcard.debug;
  * Allows enabling or disabling debug mode.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 12/13/2024
- * Subject: MSSE 670 Object Oriented Software construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  */
 public class Debug {
     private static boolean debugMode = false;

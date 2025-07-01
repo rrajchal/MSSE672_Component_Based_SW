@@ -10,8 +10,8 @@ import java.awt.Color;
  * and sets appropriate error messages when validation fails.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 11/30/2024
- * Subject: MSSE 670 Object Oriented Software Construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
 public class Validation {

@@ -15,8 +15,8 @@ import java.util.Objects;
  * A player has a unique ID, username, password, first name, last name, date of birth, points, admin status, and login status.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 11/03/2024
- * Subject: MSSE 670 Object Oriented Software Construction
+ * Date: 06/30/2025
+ * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
 public class Player implements Serializable {
