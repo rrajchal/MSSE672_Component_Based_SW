@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="670.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.topcard.presentation.controller.GameController">
+
+    <!-- Player 1 (Bottom) -->
+    <GridPane gridLinesVisible="true" layoutX="249.0" layoutY="360.0" prefHeight="84.0" prefWidth="187.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <ImageView fx:id="player1C1" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="player1C2" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+        <ImageView fx:id="player1C3" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+    </GridPane>
+    <Label layoutX="247.0" layoutY="478.0" text="First Name" />
+    <TextField fx:id="player1FirstName" editable="false" layoutX="247.0" layoutY="450.0" prefHeight="25.0" prefWidth="62.0" />
+    <Label layoutX="323.0" layoutY="478.0" text="Balance" />
+    <TextField fx:id="player1Balance" editable="false" layoutX="323.0" layoutY="450.0" prefHeight="25.0" prefWidth="47.0" />
+    <Label layoutX="378.0" layoutY="478.0" text="Change" />
+    <TextField fx:id="player1Change" editable="false" layoutX="378.0" layoutY="450.0" prefHeight="25.0" prefWidth="47.0" />
+    <Label layoutX="441.0" layoutY="418.0" text="Bet Amount: " />
+    <TextField fx:id="betAmountTextField" layoutX="508.0" layoutY="406.0" prefHeight="25.0" prefWidth="41.0" />
+
+    <!-- Player 2 (Left) -->
+    <GridPane gridLinesVisible="true" layoutX="37.0" layoutY="202.0" prefHeight="84.0" prefWidth="187.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <ImageView fx:id="player2C1" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="player2C2" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+        <ImageView fx:id="player2C3" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+    </GridPane>
+    <Label layoutX="37.0" layoutY="321.0" text="First Name" />
+    <TextField fx:id="player2FirstName" editable="false" layoutX="37.0" layoutY="293.0" prefHeight="25.0" prefWidth="62.0" />
+    <Label layoutX="113.0" layoutY="321.0" text="Balance" />
+    <TextField fx:id="player2Balance" editable="false" layoutX="113.0" layoutY="293.0" prefHeight="25.0" prefWidth="47.0" />
+    <Label layoutX="168.0" layoutY="321.0" text="Change" />
+    <TextField fx:id="player2Change" editable="false" layoutX="168.0" layoutY="293.0" prefHeight="25.0" prefWidth="47.0" />
+
+    <!-- Player 3 (Top) -->
+    <GridPane gridLinesVisible="true" layoutX="243.0" layoutY="36.0" prefHeight="84.0" prefWidth="187.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <ImageView fx:id="player3C1" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="player3C2" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+        <ImageView fx:id="player3C3" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+    </GridPane>
+    <Label layoutX="243.0" layoutY="156.0" text="First Name" />
+    <TextField fx:id="player3FirstName" editable="false" layoutX="243.0" layoutY="128.0" prefHeight="25.0" prefWidth="62.0" />
+    <Label layoutX="319.0" layoutY="156.0" text="Balance" />
+    <TextField fx:id="player3Balance" editable="false" layoutX="319.0" layoutY="128.0" prefHeight="25.0" prefWidth="47.0" />
+    <Label layoutX="374.0" layoutY="156.0" text="Change" />
+    <TextField fx:id="player3Change" editable="false" layoutX="374.0" layoutY="128.0" prefHeight="25.0" prefWidth="47.0" />
+
+    <!-- Player 4 (Right) -->
+    <GridPane gridLinesVisible="true" layoutX="458.0" layoutY="202.0" prefHeight="84.0" prefWidth="187.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="54.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="54.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="54.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <ImageView fx:id="player4C1" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="player4C2" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+        <ImageView fx:id="player4C3" fitHeight="84.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+    </GridPane>
+    <Label layoutX="458.0" layoutY="321.0" text="First Name" />
+    <TextField fx:id="player4FirstName" editable="false" layoutX="458.0" layoutY="293.0" prefHeight="25.0" prefWidth="62.0" />
+    <Label layoutX="534.0" layoutY="321.0" text="Balance" />
+    <TextField fx:id="player4Balance" editable="false" layoutX="534.0" layoutY="293.0" prefHeight="25.0" prefWidth="47.0" />
+    <Label layoutX="589.0" layoutY="321.0" text="Change" />
+    <TextField fx:id="player4Change" editable="false" layoutX="589.0" layoutY="293.0" prefHeight="25.0" prefWidth="47.0" />
+
+    <!-- Common Elements -->
+    <ImageView fitHeight="125.0" fitWidth="99.0" layoutX="294.0" layoutY="188.0" pickOnBounds="true" preserveRatio="true">
+        <Image url="@../../../images/BACK CARD.JPG" />
+    </ImageView>
+    <Button fx:id="startButton" layoutX="302.0" layoutY="237.0" mnemonicParsing="false" onAction="#startButtonPressed" text="Start Game" />
+    <TextField fx:id="winnerTextField" alignment="CENTER" editable="false" layoutX="175.0" layoutY="509.0" prefHeight="25.0" prefWidth="344.0" />
+
+</AnchorPane>
