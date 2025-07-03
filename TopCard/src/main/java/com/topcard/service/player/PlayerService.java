@@ -295,12 +295,12 @@ public class PlayerService implements IPlayerService {
     }
 
     /**
-     * Finds a player based on a provided predicate.
+     * Finds a player based on a provided .
      *
-     * @param predicate the condition to match
+     * @param  predicate the condition to match
      * @return the matching player, or null if not found
      */
-    private Player findPlayer(LinePredicate predicate) {
+    private Player findPlayer(Predicate<String> predicate) {
         List<String> lines = readLinesFromFile();
         for (String line : lines) {
             if (predicate.test(line)) {
@@ -341,7 +341,7 @@ public class PlayerService implements IPlayerService {
      * A functional interface for evaluating conditions on lines from the players.csv file.
      */
     @FunctionalInterface
-    private interface LinePredicate {
-        boolean test(String line);
+    private interface Predicate<T> {
+        boolean test(T t);
     }
 }

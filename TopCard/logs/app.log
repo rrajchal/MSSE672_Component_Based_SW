@@ -116,3 +116,89 @@
 [21:34:30.354] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/KING OF CLUBS.JPG
 [21:34:30.354] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:183) - Attempting to load image from path: /images/TEN OF DIAMONDS.JPG
 [21:34:30.354] [JavaFX Application Thread] INFO  com.topcard.presentation.controller.GameController (GameController.java:186) - Successfully loaded image: /images/TEN OF DIAMONDS.JPG
+[18:12:22.672] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[18:12:27.094] [AWT-EventQueue-0] INFO  com.topcard.presentation.controller.OptionsController (OptionsController.java:64) - Initializing Option Controller
+[18:12:29.287] [JavaFX Application Thread] INFO  com.topcard.presentation.view.GameView (GameView.java:50) - Starting GameView
+[18:12:29.288] [JavaFX Application Thread] INFO  com.topcard.presentation.view.GameView (GameView.java:53) - Attempting to load FXML from: /com/topcard/presentation/GameView.fxml
+[18:20:12.477] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[18:20:28.559] [AWT-EventQueue-0] INFO  com.topcard.presentation.controller.OptionsController (OptionsController.java:64) - Initializing Option Controller
+[18:20:31.201] [JavaFX Application Thread] INFO  com.topcard.presentation.view.GameView (GameView.java:50) - Starting GameView
+[18:20:31.201] [JavaFX Application Thread] INFO  com.topcard.presentation.view.GameView (GameView.java:53) - Attempting to load FXML from: /com/topcard/presentation/GameView.fxml
+[18:20:37.988] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:235) - Failed to load log4j2.properties: config\log4j2.properties
+[18:20:51.501] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:235) - Failed to load log4j2.properties: config\log4j2.properties
+[18:25:29.261] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[18:25:31.501] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:249) - Logging level updated to error
+[18:25:36.948] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:249) - Logging level updated to debug
+[18:25:44.199] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:249) - Logging level updated to error
+[18:28:00.202] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[18:28:01.954] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:251) - Failed to save log4j2.properties: resources\log4j2.properties
+[19:47:42.808] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:47:45.702] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:249) - Logging level updated to error
+[19:48:45.217] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:48:47.661] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:249) - Logging level updated to error
+[19:51:56.820] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:52:26.970] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:53:14.407] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:53:59.147] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:54:01.121] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:235) - Changing log level
+[19:55:10.194] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[19:55:14.323] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - ✅ Logging level changed to DEBUG
+[19:55:46.647] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - ✅ Logging level changed to DEBUG
+[19:56:05.871] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - ✅ Logging level changed to DEBUG
+[19:59:38.794] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:250) - Logging level updated to: DEBUG
+[19:59:48.136] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:250) - Logging level updated to: DEBUG
+[19:59:57.553] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:250) - Logging level updated to: DEBUG
+[20:01:11.010] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:250) - Logging level updated to: DEBUG
+[20:01:27.127] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[20:01:30.355] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:250) - Logging level updated to: DEBUG
+[20:04:32.386] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[20:04:34.728] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:04:34.734] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:04:34.734] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:04:45.590] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:05:00.728] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:05:00.728] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:05:03.797] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:05:03.808] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:05:03.808] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:05:21.388] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:05:21.388] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:05:32.279] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:05:32.279] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:05:32.279] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:05:34.324] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:05:34.324] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:05:34.324] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:05:36.570] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:05:36.573] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:05:36.573] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:06:14.199] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:06:14.214] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:07:24.199] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:07:24.199] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:08:07.845] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: DEBUG
+[20:08:07.853] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:259) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:08:07.853] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:266) - Attempted to set logging level to: DEBUG
+[20:08:33.354] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: ERROR
+[20:08:33.354] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:247) - Successfully updated log4j2.properties file.
+[20:09:51.288] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: DEBUG
+[20:09:51.292] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:09:51.292] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:267) - Attempted to set logging level to: DEBUG
+[20:10:11.247] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: DEBUG
+[20:10:11.247] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:248) - Successfully updated log4j2.properties file at: D:\GitHub\MSSE672ComponentBasedSWDevelopment\MSSE672_Component_Based_SW\TopCard\config\log4j2.properties
+[20:10:11.254] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:10:11.254] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:267) - Attempted to set logging level to: DEBUG
+[20:10:24.543] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: DEBUG
+[20:10:24.543] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:248) - Successfully updated log4j2.properties file at: D:\GitHub\MSSE672ComponentBasedSWDevelopment\MSSE672_Component_Based_SW\TopCard\config\log4j2.properties
+[20:10:24.552] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[20:10:24.552] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:267) - Attempted to set logging level to: DEBUG
+[18:13:35.057] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: DEBUG
+[18:13:35.067] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[18:13:35.067] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:267) - Attempted to set logging level to: DEBUG
+[18:13:40.965] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: ERROR
+[18:13:40.965] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:248) - Successfully updated log4j2.properties file at: D:\GitHub\MSSE672ComponentBasedSWDevelopment\MSSE672_Component_Based_SW\TopCard\config\log4j2.properties
+[18:28:49.205] [main] INFO  com.topcard.presentation.controller.LoginController (LoginController.java:51) - Initializing Login Controller
+[18:28:55.249] [AWT-EventQueue-0] ERROR com.topcard.app.MainApp (MainApp.java:244) - This is the current log level: DEBUG
+[18:28:55.251] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:248) - Successfully updated log4j2.properties file at: D:\GitHub\MSSE672ComponentBasedSWDevelopment\MSSE672_Component_Based_SW\TopCard\config\log4j2.properties
+[18:28:55.257] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:260) - Log4j2 reconfigured from file. Current in-memory logging level for MainApp: DEBUG
+[18:28:55.257] [AWT-EventQueue-0] INFO  com.topcard.app.MainApp (MainApp.java:267) - Attempted to set logging level to: DEBUG

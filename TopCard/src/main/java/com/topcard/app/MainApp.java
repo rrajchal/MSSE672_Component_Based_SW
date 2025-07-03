@@ -5,10 +5,16 @@ import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.view.LoginView;
 import com.topcard.presentation.controller.LoginController;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import javax.swing.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -101,8 +107,10 @@ public class MainApp {
         // Add action listeners to the menu items
         loginMenuItem.addActionListener(e -> openLogin());
         exitMenuItem.addActionListener(e -> System.exit(0));
-        debugTrueMenuItem.addActionListener(e -> logger.warn("Has not impletemented debug level in GUI"));
-        debugFalseMenuItem.addActionListener(e -> logger.warn("Has not impletemented debug level in GUI"));
+
+        debugTrueMenuItem.addActionListener(e -> updateLoggingLevel("DEBUG"));
+        debugFalseMenuItem.addActionListener(e -> updateLoggingLevel("ERROR"));
+
         aboutGameMenuItem.addActionListener(e -> showAboutGame());
 
         // Initialize and add the login view as an internal frame
@@ -209,6 +217,53 @@ public class MainApp {
         scrollPane.setPreferredSize(new java.awt.Dimension(600, 500));
 
         JOptionPane.showMessageDialog(null, scrollPane, Constants.ABOUT_GAME, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Dynamically updates the root logger level at runtime using Log4j2's internal API.
+     *
+     * <p>This method updates the in-memory configuration and applies it immediately.
+     * It does not rely on modifying the log4j2.properties file.</p>
+     *
+     * @param level the desired log level (e.g., "DEBUG", "ERROR", "INFO")
+     */
+    public static void updateLoggingLevel(String level) {
+        Path log4jConfigFilePath = Paths.get("config", "log4j2.properties");
+        Properties props = new Properties();
+
+        try (FileInputStream in = new FileInputStream(log4jConfigFilePath.toFile())) {
+            props.load(in);
+        } catch (IOException e) {
+            logger.error("Error loading log4j2.properties for update: " + e.getMessage());
+            return;
+        }
+
+        // Update the property
+        props.setProperty("rootLogger.level", level);
+        logger.error("This is the current log level: " + props.getProperty("rootLogger.level"));
+        // Inside updateLoggingLevel, after the FileOutputStream block:
+        try (FileOutputStream out = new FileOutputStream(log4jConfigFilePath.toFile())) {
+            props.store(out, "Updated rootLogger.level to " + level);
+            logger.info("Successfully updated log4j2.properties file at: " + log4jConfigFilePath.toAbsolutePath()); // ADD THIS LINE
+        } catch (IOException e) {
+            logger.error("Error saving log4j2.properties after update: " + e.getMessage());
+            return;
+        }
+
+        // Reconfigure Log4j2 from the updated file
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        try {
+            ctx.setConfigLocation(log4jConfigFilePath.toUri());
+            // In some Log4j2 versions, a direct reconfigure call might be needed if setConfigLocation doesn't trigger it
+            ctx.reconfigure();
+            logger.info("Log4j2 reconfigured from file. Current in-memory logging level for MainApp: " + logger.getLevel());
+        } catch (Exception e) {
+            logger.error("Error reconfiguring Log4j2 from file: " + e.getMessage());
+        }
+
+        // This logger.info will only be visible if the new level is INFO or lower (DEBUG, TRACE)
+        // If 'level' is "ERROR", this INFO message won't show.
+        logger.info("Attempted to set logging level to: " + level);
     }
 }
 
