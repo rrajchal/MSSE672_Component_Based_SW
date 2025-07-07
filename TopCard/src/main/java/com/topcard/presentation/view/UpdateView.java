@@ -23,6 +23,7 @@ import java.awt.Insets;
  */
 public class UpdateView extends JFrame {
 
+    private JLabel searchLabel;
     private JTextField searchField;
     private JButton searchButton;
     private JLabel messageLabel;
@@ -58,7 +59,7 @@ public class UpdateView extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Search section for admin users
-        JLabel searchLabel = new JLabel("Player ID:");
+        searchLabel = new JLabel("Player ID:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         updatePanel.add(searchLabel, gbc);
@@ -177,6 +178,9 @@ public class UpdateView extends JFrame {
         return updatePanel;
     }
 
+    public JLabel getSearchLevel() {
+        return searchLabel;
+    }
     public JTextField getSearchField() {
         return searchField;
     }

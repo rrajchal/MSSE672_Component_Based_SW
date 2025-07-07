@@ -58,6 +58,7 @@ public class UpdateController {
             updateView.getSearchButton().addActionListener(e -> handleSearch());
         } else {
             populateUserInfo(username);
+            updateView.getSearchLevel().setVisible(false);
             updateView.getSearchField().setVisible(false);
             updateView.getSearchButton().setVisible(false);
             updateView.getIsAdminLabel().setVisible(false);
@@ -169,10 +170,9 @@ public class UpdateController {
             }
 
             if (isAdmin) {
-                updatedPlayer.setPlayerId(Integer.parseInt(updateView.getIdField().getText()));
                 updatedPlayer.setAdmin(updateView.getIsAdminCheckBox().isSelected());
             }
-
+            updatedPlayer.setPlayerId(Integer.parseInt(updateView.getIdField().getText()));
             playerManager.updateProfile(updatedPlayer);
             JOptionPane.showMessageDialog(updateView, Constants.UPDATED, Constants.SUCCESS, JOptionPane.INFORMATION_MESSAGE);
         } else {

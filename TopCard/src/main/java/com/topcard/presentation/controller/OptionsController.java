@@ -65,11 +65,7 @@ public class OptionsController {
         PlayerManager playerManager = new PlayerManager();
         player = playerManager.getPlayerByUsername(username);
 
-        if (player != null && player.isAdmin()) {
-            optionsView.setAddPlayerButtonVisibility(true);
-        } else {
-            optionsView.setAddPlayerButtonVisibility(false);
-        }
+        optionsView.setAddPlayerButtonVisibility(player != null && player.isAdmin());
         optionsView.getPlayGameButton().addActionListener(e -> handlePlayGame());
         optionsView.getUpdateButton().addActionListener(e -> handleUpdate(username));
         optionsView.getAddPlayerButton().addActionListener(e -> handleAddPlayer());

@@ -29,7 +29,7 @@ public class Player implements Serializable {
 
     private int playerId;
     private String username;
-    private String password;
+    private String password;  // Encrypted password hash
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
@@ -164,7 +164,7 @@ public class Player implements Serializable {
 
     /**
      * Changes points based on win (add) or loss (subtract, adds a negative value)
-     * Also changes in data.
+     * Also changes in data in persistence via service layer by calling DAO
      * @param points points to be added
      */
     public void changePoints(int points) {
