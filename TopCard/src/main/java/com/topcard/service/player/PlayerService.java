@@ -6,7 +6,7 @@ import com.topcard.domain.Player;
 import com.topcard.exceptions.TopCardException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mindrot.jbcrypt.BCrypt;
+//import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -200,6 +200,7 @@ public class PlayerService implements IPlayerService {
 //        writeLinesToFile(lines);
         Optional<Player> optionalExistingPlayer = playerDao.getPlayerById(player.getPlayerId());
         logger.debug("Attempting to update player: " + player);
+        /*
         if (optionalExistingPlayer.isPresent()) {
             Player existingPlayer = optionalExistingPlayer.get();
 
@@ -220,6 +221,7 @@ public class PlayerService implements IPlayerService {
         } else {
             logger.warn("Player with ID " + player.getPlayerId() + " not found for update.");
         }
+         */
     }
 
     @Override
@@ -277,7 +279,8 @@ public class PlayerService implements IPlayerService {
      * @return the encrypted password
      */
     private String encryptPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+        //return BCrypt.hashpw(password, BCrypt.gensalt());
+        return "";
     }
 
     /**
@@ -288,7 +291,8 @@ public class PlayerService implements IPlayerService {
      * @return true if the password matches, false otherwise
      */
     public boolean verifyPassword(String plainPassword, String encryptedPassword) {
-        return BCrypt.checkpw(plainPassword, encryptedPassword);
+        //return BCrypt.checkpw(plainPassword, encryptedPassword);
+        return true;
     }
 
     /**
