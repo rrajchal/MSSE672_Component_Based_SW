@@ -16,10 +16,10 @@ public class PlayerDaoImpl implements IPlayerDao {
 
     private static final Logger logger = LogManager.getLogger(PlayerDaoImpl.class);
 
-    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (username, password_hash, first_name, last_name, date_of_birth, points, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (username, password, first_name, last_name, date_of_birth, points, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_PLAYER_BY_ID_SQL = "SELECT * FROM players WHERE player_id = ?";
     private static final String SELECT_PLAYER_BY_USERNAME_SQL = "SELECT * FROM players WHERE username = ?";
-    private static final String UPDATE_PLAYER_SQL = "UPDATE players SET username = ?, password_hash = ?, first_name = ?, last_name = ?, date_of_birth = ?, points = ?, is_admin = ? WHERE player_id = ?";
+    private static final String UPDATE_PLAYER_SQL = "UPDATE players SET username = ?, password = ?, first_name = ?, last_name = ?, date_of_birth = ?, points = ?, is_admin = ? WHERE player_id = ?";
     private static final String DELETE_PLAYER_SQL = "DELETE FROM players WHERE player_id = ?";
     private static final String SELECT_ALL_PLAYERS_SQL = "SELECT * FROM players";
     private static final String DELETE_ALL_PLAYERS_SQL = "DELETE FROM players";
@@ -181,7 +181,7 @@ public class PlayerDaoImpl implements IPlayerDao {
     private Player mapResultSetToPlayer(ResultSet resultSet) throws SQLException {
         int playerId = resultSet.getInt("player_id");
         String username = resultSet.getString("username");
-        String passwordHash = resultSet.getString("password_hash");
+        String passwordHash = resultSet.getString("password");
         String firstName = resultSet.getString("first_name");
         String lastName = resultSet.getString("last_name");
         LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();

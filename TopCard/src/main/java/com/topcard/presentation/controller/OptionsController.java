@@ -17,9 +17,10 @@ import javax.swing.*;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * This class represents the controller for the options view.
@@ -79,7 +80,7 @@ public class OptionsController {
         // Initialize JavaFX environment if not already initialized
         new JFXPanel();
         Platform.setImplicitExit(false);
-        List<Player> players = getThreeRandomPlayers();
+        List<Player> players = getThreeRandomOpponentPlayers();
 
         Platform.runLater(() -> {
             try {
@@ -99,18 +100,35 @@ public class OptionsController {
      *
      * @return the list of four players (including the authenticated user)
      */
-    private List<Player> getThreeRandomPlayers() {
+    private List<Player> getThreeRandomOpponentPlayers() {
         PlayerManager playerManager = new PlayerManager();
-        List<Player> allPlayers = playerManager.getAllPlayers(); // Assuming this method exists
-        List<Player> selectedPlayers = new ArrayList<>();
+        List<Player> allPlayers = playerManager.getAllPlayers();
+        allPlayers.removeIf(p -> p.getUsername().equals(player.getUsername())); // remove the logged-in player from allPlayers
+         List<Player> selectedPlayers = new ArrayList<>();
         selectedPlayers.add(player); // Add the logged-in player as the first player
 
-        // Randomly select three other players from the list
-        Random rand = new Random();
-        while (selectedPlayers.size() < 4) {
-            Player randomPlayer = allPlayers.get(rand.nextInt(allPlayers.size()));
-            if (!selectedPlayers.contains(randomPlayer)) {
-                selectedPlayers.add(randomPlayer);
+        Collections.shuffle(allPlayers);
+
+        // Select up to 3 opponents from the available list or create new temp players
+        for (int i = 0; i < 3; i++) {
+            if (i < allPlayers.size()) {
+                selectedPlayers.add(allPlayers.get(i));
+            } else {
+                // Not enough players, generate a unique temporary username
+                String baseUsername = "Bot" + (i + 1);
+                String tempUsername = baseUsername;
+                int suffix = 1;
+
+                // Make sure the player tempUsername already does not exist
+                while (playerManager.getPlayerByUsername(tempUsername) != null) {
+                    tempUsername = baseUsername + "_" + suffix++;
+                }
+
+                LocalDate dob = LocalDate.of(1900, 1, 1);
+                Player tempPlayer = new Player(tempUsername, "pass" + (i + 1), baseUsername,"Bot", dob);
+                playerManager.addPlayer(tempPlayer);
+                logger.warn("Not enough players in DB. Created temporary player: " + tempPlayer.getUsername());
+                selectedPlayers.add(tempPlayer);
             }
         }
 

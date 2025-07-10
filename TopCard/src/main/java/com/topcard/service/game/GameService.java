@@ -8,6 +8,7 @@ import com.topcard.service.player.PlayerService;
 import java.util.List;
 
 public class GameService implements IGameService {
+
     private final Game game;
     private final PlayerService playerService;
     private final List<Player> players;
@@ -15,7 +16,6 @@ public class GameService implements IGameService {
     public GameService(List<Player> players) {
         this.playerService = new PlayerService();
         this.players = players;
-        addPlayers(players);
         List<Player> updatedPlayers = updateExistingPlayers(players);
         this.game = new Game(updatedPlayers);
     }

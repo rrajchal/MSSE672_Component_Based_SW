@@ -3,6 +3,7 @@ package com.topcard.domain;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.topcard.exceptions.TopCardException;
+import nl.altindag.log.LogCaptor;
 import org.junit.Test;
 
 import java.io.*;
@@ -98,11 +99,9 @@ public class PlayerTest {
         player.drawCards(deck);
 
         // Capture the output of showHand()
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent)); //
-        //System.out.println(outContent);
-
+        LogCaptor logCaptor = LogCaptor.forClass(Player.class);
         player.showHand();
+        List<String> outContent = logCaptor.getInfoLogs();
 
         // Verify the output is not empty and contains cards
         String output = outContent.toString();

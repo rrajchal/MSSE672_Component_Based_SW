@@ -56,13 +56,21 @@ public class ServiceFactoryTest {
     @Test
     public void testPlayerServiceAddPlayer() {
         IPlayerService playerService = ServiceFactory.createService(PlayerService.class);
-        deleteAllPlayersData(playerService);  // remove all data
-        Player player = new Player("mickey", "password", "Mickey", "Mouse", LocalDate.of(1990, 1, 1));
+        // deleteAllPlayersData(playerService);  // removes all data, let's not remove; rather let's remove one player only
 
-        playerService.addPlayer(player);  // added the player whose Id is 1.
-        Player playerInData = playerService.getPlayerByUsername("mickey");
+        Player player = playerService.getPlayerByUsername("mickey");
+        if (player != null) {
+            playerService.removePlayer(player.getPlayerId());
+        }
 
-        assertEquals(1, playerInData.getPlayerId());
+        int initialNumberOfPlayers = playerService.getAllPlayers().size();
+        System.out.println(initialNumberOfPlayers);
+        player = new Player("mickey", "password", "Mickey", "Mouse", LocalDate.of(1990, 1, 1));
+
+        playerService.addPlayer(player);  // added the player.
+        int finalNumberOfPlayers = playerService.getAllPlayers().size();
+        System.out.println(finalNumberOfPlayers);
+        assertEquals(1, finalNumberOfPlayers - initialNumberOfPlayers);
     }
 
     @Test

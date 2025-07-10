@@ -1,7 +1,6 @@
 package com.topcard.presentation.controller;
 
 import com.topcard.business.GameManager;
-import com.topcard.business.PlayerManager;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import javafx.fxml.FXML;
@@ -102,7 +101,7 @@ public class GameController {
         if (valid) {
             // Start the game and deal cards
             gameManager.startGame();
-            PlayerManager pm = new PlayerManager();
+
             // Clone the players list
             List<Player> initialPlayers = clonePlayers(players);
 
