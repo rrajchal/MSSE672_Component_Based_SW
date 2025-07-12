@@ -1,0 +1,33 @@
+<!-- Root element of the Hibernate configuration -->
+<hibernate-configuration>
+    <!-- The session-factory element holds all Hibernate settings and mappings -->
+    <session-factory>
+
+        <!-- JDBC connection URL: points to the 'topcardDB' database on localhost -->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/topcardDB</property>
+
+        <!-- Database username -->
+        <property name="hibernate.connection.username">root</property>
+
+        <!-- Database password -->
+        <property name="hibernate.connection.password">root</property>
+
+        <!-- SQL dialect: tells Hibernate to use MySQL syntax for query generation -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- 'validate' checks database schema against entity mappings during startup -->
+        <property name="hibernate.hbm2ddl.auto">validate</property>
+
+        <!-- Alternative for development: 'update' modifies schema to match entity definitions (adds columns/tables),
+             but does NOT delete existing ones -->
+        <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
+
+        <!-- Enables logging of generated SQL statements in the console -->
+        <property name="hibernate.show_sql">false</property>
+
+        <!-- Specifies the entity class to be mapped to a database table -->
+        <mapping class="com.topcard.domain.Player"/>
+
+    </session-factory>
+
+</hibernate-configuration>

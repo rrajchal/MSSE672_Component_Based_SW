@@ -1,5 +1,6 @@
 package com.topcard.domain;
 
+import jakarta.persistence.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +21,8 @@ import java.util.Objects;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Entity // JPA entity class
+@Table(name = "players") // Map this entity to the 'players' table
 public class Player implements Serializable {
 
     @Serial
@@ -27,20 +30,50 @@ public class Player implements Serializable {
 
     private static final Logger logger = LogManager.getLogger(Player.class);
 
+    @Id // playerId as the primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment for the ID
+    @Column(name = "player_id") // Map to the 'player_id' column
     private int playerId;
+
+    @Column(name = "username", unique = true, nullable = false, length = 50)
     private String username;
-    private String password;  // Encrypted password hash
+
+    @Column(name = "password", nullable = false, length = 255) // Encrypted password hash, suitable length
+    private String password;
+
+    @Column(name = "first_name", length = 50)
     private String firstName;
+
+    @Column(name = "last_name", length = 50)
     private String lastName;
+
+    @Column(name = "date_of_birth") // Hibernate can map LocalDate directly to DATE type
     private LocalDate dateOfBirth;
+
+    @Column(name = "points")
     private int points;
+
+    @Column(name = "is_admin")
     private boolean isAdmin;
 
+    @Transient // Transient field will NOT be persisted to the database
     private boolean isLoggedIn;
-    private static final int AGE_THRESHOLD = 18;  // Eligible age to play this game
-    // 3 by default for this TopCard card game. However, for scalability we can set differently
-    private int numOfCards = 3;
+
+    @Transient
+    private static final int AGE_THRESHOLD = 18; // Eligible age to play this game
+
+    @Transient
+    private int numOfCards = 3;  // 3 by default for this TopCard card game. However, for scalability we can set differently
+
+    @Transient
     private Card[] hand;
+
+    /**
+     * Required no-argument constructor for Hibernate.
+     */
+    public Player() {
+        // Default constructor required by JPA/Hibernate
+    }
 
     /**
      * Constructs a Player with the specified details, excluding admin status.
