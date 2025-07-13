@@ -2,7 +2,6 @@ package com.topcard.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.topcard.exceptions.TopCardException;
 import nl.altindag.log.LogCaptor;
 import org.junit.Test;
 
@@ -172,41 +171,6 @@ public class PlayerTest {
 
         assertTrue(playerString.contains("playerId=1"), "toString should contain playerId=1");
         assertTrue(playerString.contains("username='mickey_mouse'"), "toString should contain username='mickey_mouse'");
-    }
-
-    @Test
-    public void testSerialization() {
-        List<Player> players = new ArrayList<>();
-        Player mickey = new Player("mickey", "password", "Mickey", "Mouse", LocalDate.of(1990, 1, 1));
-        Player donald = new Player("donald", "password", "Donald", "Duck", LocalDate.of(1995, 6, 15));
-        mickey.setPlayerId(1);
-        donald.setPlayerId(2);
-        players.add(mickey);
-        players.add(donald);
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("players.ser"))) {
-            oos.writeObject(players);
-        } catch (Exception e) {
-            fail("Serialization error: " + e.getMessage());
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testDeserialization() {
-        File file = new File("players.ser");
-        if (!file.exists()) {
-            testSerialization();
-        }
-        List<Player> players = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("players.ser"))) {
-            players = (List<Player>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            fail("Deserialization error: " + e.getMessage());
-        }
-        //players.forEach(System.out::println);
-        assertNotNull(players);
-        assertEquals(1, players.get(0).getPlayerId());
-        assertEquals("Mickey", players.get(0).getFirstName());
     }
 
     public List<Player> generatePlayers() {

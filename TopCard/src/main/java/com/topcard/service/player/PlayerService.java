@@ -30,23 +30,6 @@ public class PlayerService implements IPlayerService {
 
     private final IPlayerDao playerDao;
 
-    /*
-    private static final Path dataFilePath;
-
-    // Move file data to mysql database
-    static {
-        Properties properties = new Properties();
-        Path configFilePath = Paths.get("config", "config.properties");
-
-        try (InputStream input = Files.newInputStream(configFilePath)) {
-            // Load the properties file
-            properties.load(input);
-            dataFilePath = Paths.get(properties.getProperty("FILE_PATH"));
-        } catch (IOException ex) {
-            throw new TopCardException("Failed to load configuration properties. " + ex.getMessage());
-        }
-    }
-    */
     public PlayerService() {
         this.playerDao = new PlayerDaoImpl(); // Instantiate the DAO implementation
     }
@@ -110,10 +93,12 @@ public class PlayerService implements IPlayerService {
     @Override
     public void changePoints(int playerId, int points) {
         Optional<Player> optionalPlayer = playerDao.getPlayerById(playerId);
+
         if (optionalPlayer.isPresent()) {
             Player player = optionalPlayer.get();
             player.setPoints(points); // Update points in the object
-            updateProfile(player, false); // Keep password unchanged
+            playerDao.updatePlayer(player);
+            logger.info("Player's points updated: " + player);
         } else {
             logger.warn("Cannot change points. Player with ID " + playerId + " not found.");
         }
@@ -135,15 +120,6 @@ public class PlayerService implements IPlayerService {
         } else {
             logger.warn("Cannot make admin. Player with ID " + playerId + " not found.");
         }
-    }
-
-    private void updateProfile(Player player, boolean changePassword) {
-        if (!changePassword) {
-            playerDao.getPlayerById(player.getPlayerId())
-                     .ifPresent(existingPlayer -> player.setPassword(existingPlayer.getPassword()));
-        }
-        updateProfile(player);
-        logger.info("Player's points updated: " + player);
     }
 
     @Override
@@ -232,13 +208,5 @@ public class PlayerService implements IPlayerService {
      */
     private void deleteAllPlayersData() {
         playerDao.deleteAllPlayersData();
-    }
-
-    /**
-     * A functional interface for evaluating conditions on lines from the players.csv file.
-     */
-    @FunctionalInterface
-    private interface Predicate<T> {
-        boolean test(T t);
     }
 }

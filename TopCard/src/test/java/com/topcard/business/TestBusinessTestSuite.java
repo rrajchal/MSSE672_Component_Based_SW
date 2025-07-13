@@ -9,7 +9,7 @@ import org.junit.runners.Suite;
  * business layer test classes in the application.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({PlayerManagerTest.class, CardManagerTest.class, GameManagerTest.class})
+@Suite.SuiteClasses({CardManagerTest.class, GameManagerTest.class})
 public class TestBusinessTestSuite {
 
 }

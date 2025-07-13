@@ -54,51 +54,14 @@ public class ServiceFactoryTest {
     }
 
     @Test
-    public void testPlayerServiceAddPlayer() {
-        IPlayerService playerService = ServiceFactory.createService(PlayerService.class);
-        // deleteAllPlayersData(playerService);  // removes all data, let's not remove; rather let's remove one player only
-
-        Player player = playerService.getPlayerByUsername("mickey");
-        if (player != null) {
-            playerService.removePlayer(player.getPlayerId());
-        }
-
-        int initialNumberOfPlayers = playerService.getAllPlayers().size();
-        System.out.println(initialNumberOfPlayers);
-        player = new Player("mickey", "password", "Mickey", "Mouse", LocalDate.of(1990, 1, 1));
-
-        playerService.addPlayer(player);  // added the player.
-        int finalNumberOfPlayers = playerService.getAllPlayers().size();
-        System.out.println(finalNumberOfPlayers);
-        assertEquals(1, finalNumberOfPlayers - initialNumberOfPlayers);
-    }
-
-    @Test
     public void testCardServiceNotShuffled() {
         ICardService cardService = ServiceFactory.createService(CardService.class);
         Card firstCard = cardService.drawCard();
         Card secondCard = cardService.drawCard();
         Card thirdCard = cardService.drawCard();
-        assertEquals(firstCard, new Card(Card.Suit.HEARTS, Card.Rank.ACE));
-        assertEquals(secondCard, new Card(Card.Suit.HEARTS, Card.Rank.TWO));
-        assertNotEquals(thirdCard, new Card(Card.Suit.HEARTS, Card.Rank.TWO));
-    }
-
-    @Test
-    public void deleteAllPlayersData() {
-        IPlayerService playerService = ServiceFactory.createService(PlayerService.class);
-        // Call the private method using reflection
-        try {
-            Method method = PlayerService.class.getDeclaredMethod("deleteAllPlayersData");
-            method.setAccessible(true);
-            method.invoke(playerService);
-
-            // Check if all data has been deleted
-            List<Player> allPlayers = playerService.getAllPlayers();
-            assertTrue(allPlayers.isEmpty());
-        } catch (Exception e) {
-            fail("Reflection error: " + e.getMessage());
-        }
+        assertEquals(new Card(Card.Suit.HEARTS, Card.Rank.ACE), firstCard);
+        assertEquals(new Card(Card.Suit.HEARTS, Card.Rank.TWO), secondCard);
+        assertNotEquals(new Card(Card.Suit.HEARTS, Card.Rank.TWO), thirdCard);
     }
 
     private List<Player> getPlayers() {

@@ -26,7 +26,6 @@ import java.util.Properties;
 /**
  * This is the main entry point of the application.
  * The MainApp class initializes the application and sets up the main login frame.
- * It also configures the debug mode based on the settings in the config.properties file.
  * <p>
  * Author: Rajesh Rajchal
  * Date: 06/30/2025
@@ -46,9 +45,6 @@ public class MainApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Copies Data file to local
-        createDataDirAndFile();
-
         // Creates Desktop Pane and Menus
         createDesktopPaneAndMenu();
     }
@@ -140,67 +136,6 @@ public class MainApp {
         LoginView loginView = new LoginView();
         new LoginController(loginView, desktopPane);
         InternalFrame.addInternalFrame(desktopPane, "Login", loginView.getLoginPanel(), 400, 300, false);
-    }
-
-    /**
-     * Ensures that the config directory and config.properties file exist.
-     * If they do not exist, creates the directory and copies the config.properties file.
-     */
-    private static void ensureConfigFileExists() {
-        Path configDir = Paths.get("config");
-        Path configFilePath = configDir.resolve("config.properties");
-
-        try {
-            // Check if the config directory exists, if not create it
-            if (Files.notExists(configDir)) {
-                Files.createDirectory(configDir);
-            }
-
-            // Check if the config.properties file exists, if not copy it from the classpath
-            if (Files.notExists(configFilePath)) {
-                try (InputStream input = MainApp.class.getClassLoader().getResourceAsStream("config.properties")) {
-                    if (input == null) {
-                        logger.error("Sorry, unable to find config.properties");
-                        return;
-                    }
-                    Files.copy(input, configFilePath, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        } catch (IOException ex) {
-            logger.error("Error creating config directory or copying config.properties: " + ex.toString());
-        }
-    }
-
-    /**
-     * Ensures that the data directory and file exist.
-     * If the file does not exist, it creates the necessary directories and the file.
-     *
-     * @throws TopCardException if an I/O error occurs while creating the file or directories.
-     */
-    public static void createDataDirAndFile() {
-        Properties properties = new Properties();
-        Path configFilePath = Paths.get("config", "config.properties");
-        try (InputStream input = Files.newInputStream(configFilePath)) {
-            // Load the properties file
-            properties.load(input);
-            // Get the file path from properties
-            String filePath = properties.getProperty("FILE_PATH");
-            Path dataFilePath = Paths.get(filePath);
-
-            // Check if the data file exists, if not copy it from the classpath
-            if (Files.notExists(dataFilePath)) {
-                try (InputStream dataInput = MainApp.class.getClassLoader().getResourceAsStream(filePath)) {
-                    if (dataInput == null) {
-                        logger.error("Unable to find data/players.csv");
-                        return;
-                    }
-                    Files.createDirectories(dataFilePath.getParent());
-                    Files.copy(dataInput, dataFilePath, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        } catch (IOException ex) {
-            throw new TopCardException("Error reading config.properties or copying data file: " + ex);
-        }
     }
 
     /**

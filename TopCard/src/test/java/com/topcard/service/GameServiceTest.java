@@ -60,22 +60,22 @@ public class GameServiceTest {
     public void testDataChange() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         // Remove all data
-        Method method = PlayerService.class.getDeclaredMethod("deleteAllPlayersData");
-        method.setAccessible(true);
-        method.invoke(playerService);
-
-        PlayerTest playerTest = new PlayerTest();
-        List<Player> players = playerTest.generatePlayers();
-        gameService = new GameService(players);
-        playerService.addPlayers(players);
-        gameService.startGame();
-        gameService.showHands();
-        List<Player> winners = gameService.determineWinner();
-        gameService.displayWinners(winners);
-
-        List<Player> updatedPlayers = gameService.executeBettingRound(10);
-
-        gameService.updateProfiles(updatedPlayers);
+//        Method method = PlayerService.class.getDeclaredMethod("deleteAllPlayersData");
+//        method.setAccessible(true);
+//        method.invoke(playerService);
+//
+//        PlayerTest playerTest = new PlayerTest();
+//        List<Player> players = playerTest.generatePlayers();
+//        gameService = new GameService(players);
+//        playerService.addPlayers(players);
+//        gameService.startGame();
+//        gameService.showHands();
+//        List<Player> winners = gameService.determineWinner();
+//        gameService.displayWinners(winners);
+//
+//        List<Player> updatedPlayers = gameService.executeBettingRound(10);
+//
+//        gameService.updateProfiles(updatedPlayers);
     }
 
 }

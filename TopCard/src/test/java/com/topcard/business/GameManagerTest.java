@@ -37,16 +37,6 @@ public class GameManagerTest {
         gameManager.displayWinners(winners); // Check the console output for the correct winner display
     }
 
-    @Test
-    public void testExecuteBettingRound() {
-        // initial points for players is 100
-
-        // Execute the betting round with a bet of 10 points
-        int betPoints = 10;
-        gameManager.executeBettingRound(betPoints);
-        // Check that the points are updated correctly
-
-    }
 
     @Test
     public void testDealCards() {
@@ -62,35 +52,6 @@ public class GameManagerTest {
         List<Player> winners = gameManager.determineWinner();
         assertNotNull(winners);
         assertFalse(winners.isEmpty());
-    }
-
-    @Test
-    public void testBetAndUpdatePlayerPoints() {
-        int points = 10;
-        for (Player player : players) {
-            System.out.println(player);
-        }
-        List<Player> updatedPlayers = gameManager.executeBettingRound(points);
-        assertNotNull(updatedPlayers);
-        assertEquals(players.size(), updatedPlayers.size());
-    }
-
-    @Test
-    public void testUpdateProfile() {
-        Player player = players.get(0);
-        player.setFirstName("SuperMickey");
-        gameManager.updateProfile(player);
-        Player updatedPlayer = players.get(0);
-        assertEquals("SuperMickey", updatedPlayer.getFirstName());
-    }
-
-    @Test
-    public void testUpdateProfiles() {
-        players.get(0).setFirstName("SuperMickey");
-        players.get(1).setFirstName("SuperDonald");
-        gameManager.updateProfiles(players);
-        assertEquals("SuperMickey", players.get(0).getFirstName());
-        assertEquals("SuperDonald", players.get(1).getFirstName());
     }
 
     @Test

@@ -1,10 +1,15 @@
 package com.topcard.util;
 
 import com.topcard.domain.Player;
+import com.topcard.exceptions.TopCardException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 
 public class HibernateUtil {
@@ -14,15 +19,32 @@ public class HibernateUtil {
 
     static {
         try {
-            // Create the SessionFactory from hibernate.cfg.xml
-            sessionFactory = new Configuration()
-                    .configure("hibernate.cfg.xml") // Loads the configuration from hibernate.cfg.xml
-                    .addAnnotatedClass(Player.class)        // Register entity classes programmatically
-                    .buildSessionFactory();
-            logger.info("Hibernate SessionFactory initialized successfully.");
-        } catch (Throwable ex) {
-            logger.fatal("Initial SessionFactory creation failed." + ex, ex);
-            throw new ExceptionInInitializerError(ex);
+            // Load database settings from config.properties
+            Properties props = new Properties();
+            try (InputStream input = HibernateUtil.class.getClassLoader().getResourceAsStream("config.properties")) {
+                if (input == null) {
+                    throw new RuntimeException("Missing config.properties file in resources.");
+                }
+                props.load(input);
+            }
+
+            // Configure Hibernate programmatically
+            Configuration configuration = new Configuration();
+            configuration.setProperty("hibernate.connection.url", props.getProperty("db.url"));
+            configuration.setProperty("hibernate.connection.username", props.getProperty("db.username"));
+            configuration.setProperty("hibernate.connection.password", props.getProperty("db.password"));
+            configuration.setProperty("hibernate.dialect", props.getProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect"));
+            configuration.setProperty("hibernate.hbm2ddl.auto", props.getProperty("hibernate.hbm2ddl.auto", "validate"));
+            configuration.setProperty("hibernate.show_sql", props.getProperty("hibernate.show_sql", "false"));
+
+            // Add annotated entities
+            configuration.addAnnotatedClass(Player.class);
+
+            sessionFactory = configuration.buildSessionFactory();
+            logger.info("Hibernate SessionFactory successfully initialized.");
+        } catch (Exception e) {
+            logger.fatal("Failed to initialize Hibernate SessionFactory.", e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 
