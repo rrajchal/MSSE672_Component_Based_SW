@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Players>
+    <Player id="0">
+        <username>mickey</username>
+        <firstName>Mickey</firstName>
+        <lastName>Mouse</lastName>
+        <dateOfBirth>1990-01-01</dateOfBirth>
+        <points>100</points>
+        <isAdmin>false</isAdmin>
+    </Player>
+    <Player id="0">
+        <username>donald</username>
+        <firstName>Donald</firstName>
+        <lastName>Duck</lastName>
+        <dateOfBirth>1995-06-166</dateOfBirth>
+        <points>100</points>
+        <isAdmin>false</isAdmin>
+    </Player>
+    <Player id="0">
+        <username>michael</username>
+        <firstName>Michael</firstName>
+        <lastName>Smith</lastName>
+        <dateOfBirth>1985-11-329</dateOfBirth>
+        <points>100</points>
+        <isAdmin>false</isAdmin>
+    </Player>
+    <Player id="0">
+        <username>rajesh</username>
+        <firstName>Rajesh</firstName>
+        <lastName>Rajchal</lastName>
+        <dateOfBirth>1980-04-101</dateOfBirth>
+        <points>100</points>
+        <isAdmin>false</isAdmin>
+    </Player>
+</Players>

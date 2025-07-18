@@ -1,15 +1,12 @@
 package com.topcard.presentation.view;
 
+import com.topcard.presentation.common.Constants;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class AddPlayerView extends JFrame {
     private JTextField firstNameField;
@@ -18,11 +15,15 @@ public class AddPlayerView extends JFrame {
     private JPasswordField passwordField;
     private JTextField dateOfBirthField;
     private JButton addPlayerButton;
-    private JLabel messageLabel;
+
+    // Components for XML upload/download
+    private JTextField xmlFilePathField;  // This is clickable
+    private JButton uploadXmlButton;    // Button to trigger XML upload
+    private JButton downloadXmlButton;  // Button for downloading XML
 
     public AddPlayerView() {
         setTitle("Add Player");
-        setSize(400, 400);
+        setSize(400, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the frame on the monitor
         initComponents();
@@ -32,6 +33,7 @@ public class AddPlayerView extends JFrame {
         JPanel addPlayerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel firstNameLabel = new JLabel("First Name:");
         gbc.gridx = 0;
@@ -83,17 +85,51 @@ public class AddPlayerView extends JFrame {
         gbc.gridy = 4;
         addPlayerPanel.add(dateOfBirthField, gbc);
 
-        addPlayerButton = new JButton("Add Player");
+        addPlayerButton = new JButton("Add Single Player");
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.anchor = GridBagConstraints.CENTER;
         addPlayerPanel.add(addPlayerButton, gbc);
 
-        messageLabel = new JLabel("");
+        JLabel messageLabel = new JLabel("");
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 2;
         addPlayerPanel.add(messageLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        addPlayerPanel.add(new JLabel("-------------------- OR --------------------"), gbc);
+
+        // --- New XML Upload Fields ---
+        JLabel xmlLabel = new JLabel("Upload Players (XML):");
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        addPlayerPanel.add(xmlLabel, gbc);
+
+        xmlFilePathField = new JTextField(Constants.CLICK_TO_UPLOAD_XML_FILE, 15);
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        xmlFilePathField.setEditable(false);
+        addPlayerPanel.add(xmlFilePathField, gbc);
+
+        uploadXmlButton = new JButton("Upload XML Players");
+        gbc.gridx = 1;
+        gbc.gridy = 9;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        addPlayerPanel.add(uploadXmlButton, gbc);
+
+        // --- XML Download Button ---
+        gbc.gridx = 1;
+        gbc.gridy = 10;
+        addPlayerPanel.add(new JLabel(Constants.EMPTY), gbc);
+
+
+        gbc.gridx = 1;
+        gbc.gridy = 11;
+        downloadXmlButton = new JButton("Download All Players as XML");
+        addPlayerPanel.add(downloadXmlButton, gbc);
 
         add(addPlayerPanel);
     }
@@ -122,7 +158,14 @@ public class AddPlayerView extends JFrame {
         return addPlayerButton;
     }
 
-    public JLabel getMessageLabel() {
-        return messageLabel;
+    public JTextField getXmlFilePathField() {
+        return xmlFilePathField;
+    }
+    public JButton getUploadXmlButton() {
+        return uploadXmlButton;
+    }
+
+    public JButton getDownloadXmlButton() {
+        return downloadXmlButton;
     }
 }

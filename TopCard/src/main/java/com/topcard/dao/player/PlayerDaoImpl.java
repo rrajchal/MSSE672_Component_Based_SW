@@ -31,6 +31,7 @@ public class PlayerDaoImpl implements IPlayerDao {
             return player;
         } catch (Exception e) {
             if (transaction != null) {
+                logger.error("Error adding player to database: " + e.getMessage());
                 transaction.rollback();
             }
             logger.error("Database error adding player: " + player.getUsername(), e);

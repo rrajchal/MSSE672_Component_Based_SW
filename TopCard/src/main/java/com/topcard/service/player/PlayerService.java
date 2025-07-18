@@ -41,7 +41,6 @@ public class PlayerService implements IPlayerService {
     @Override
     public boolean addPlayer(Player player) {
         if (playerDao.getPlayerByUsername(player.getUsername()).isEmpty()) {
-            //player.setPlayerId(getNewId());
             player.setUsername(player.getUsername().toLowerCase());
             player.setPassword(encryptPassword(player.getPassword())); // Encrypt the password
             Player addedPlayer = playerDao.addPlayer(player);

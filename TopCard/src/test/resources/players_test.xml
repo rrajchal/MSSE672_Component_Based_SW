@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Players>
+    <Player id="1">
+        <username>mickey_mouse</username>
+        <password>password</password>
+        <firstName>Mickey</firstName>
+        <lastName>Mouse</lastName>
+        <dateOfBirth>1928-11-18</dateOfBirth>
+        <points>999</points>
+        <isAdmin>true</isAdmin>
+    </Player>
+    <Player id="2">
+        <username>minnie_mouse</username>
+        <password>password</password>
+        <firstName>Minnie</firstName>
+        <lastName>Mouse</lastName>
+        <dateOfBirth>1928-11-18</dateOfBirth>
+        <points>950</points>
+        <isAdmin>false</isAdmin>
+    </Player>
+    <Player id="3">
+        <username>donald_duck</username>
+        <password>password</password>
+        <firstName>Donald</firstName>
+        <lastName>Duck</lastName>
+        <dateOfBirth>1934-06-09</dateOfBirth>
+        <points>700</points>
+        <isAdmin>false</isAdmin>
+    </Player>
+</Players>
