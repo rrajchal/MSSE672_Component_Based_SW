@@ -34,7 +34,7 @@ public class HibernateUtil {
             configuration.setProperty("hibernate.connection.username", props.getProperty("db.username"));
             configuration.setProperty("hibernate.connection.password", props.getProperty("db.password"));
             configuration.setProperty("hibernate.dialect", props.getProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect"));
-            configuration.setProperty("hibernate.hbm2ddl.auto", props.getProperty("hibernate.hbm2ddl.auto", "validate"));
+            configuration.setProperty("hibernate.hbm2ddl.auto", props.getProperty("hibernate.hbm2ddl.auto", "update"));
             configuration.setProperty("hibernate.show_sql", props.getProperty("hibernate.show_sql", "false"));
 
             // Add annotated entities

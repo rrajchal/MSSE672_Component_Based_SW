@@ -2,6 +2,8 @@ package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
 import com.topcard.domain.Player;
+import com.topcard.network.GameClient;
+import com.topcard.network.SocketGameController;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.common.Validation;
@@ -14,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import javax.swing.*;
 
 /**
@@ -70,6 +73,47 @@ public class LoginController extends JFrame {
         String password = new String(loginView.getPasswordField().getPassword());
 
         if (validateInputs(loginView.getUsernameField(), username, Constants.USERNAME_CANNOT_HAVE_SPACES) &&
+                validateInputs(loginView.getPasswordField(), password, Constants.PASSWORD_CANNOT_HAVE_SPACES) &&
+                authenticate(username, password)) {
+
+            PlayerManager playerManager = new PlayerManager();
+            Player loggedInPlayer = playerManager.getPlayerByUsername(username);
+
+            // Connect to multiplayer game
+            try {
+                //new SocketGameController(loggedInPlayer, "localhost");
+                GameClient.getInstance().connect("localhost", loggedInPlayer);
+            } catch (IOException e) {
+                logger.error("Could not connect to game server: " + e.getMessage());
+                JOptionPane.showMessageDialog(loginView.getLoginPanel(),
+                        "Failed to join multiplayer server.",
+                        "Connection Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            // Close login frame and show Options
+            JInternalFrame loginFrame = (JInternalFrame) SwingUtilities.getAncestorOfClass(JInternalFrame.class, loginView.getLoginPanel());
+            if (loginFrame != null) {
+                loginFrame.dispose();
+            }
+
+            OptionsView optionsView = new OptionsView();
+            new OptionsController(optionsView, username, desktopPane);
+            InternalFrame.addInternalFrame(desktopPane, "Choose an Option", optionsView.getOptionsPanel(), 400, 200, false);
+        } else {
+            loginView.getMessageLabel().setForeground(Color.RED);
+            loginView.getMessageLabel().setText(Constants.INVALID_USERNAME_OR_PASSWORD);
+        }
+    }
+
+    /*
+    private void handleLogin() {
+        String username = loginView.getUsernameField().getText();
+        String password = new String(loginView.getPasswordField().getPassword());
+
+        if (validateInputs(loginView.getUsernameField(), username, Constants.USERNAME_CANNOT_HAVE_SPACES) &&
             validateInputs(loginView.getPasswordField(), password, Constants.PASSWORD_CANNOT_HAVE_SPACES) &&
             authenticate(username, password)) {
 
@@ -94,6 +138,7 @@ public class LoginController extends JFrame {
             loginView.getMessageLabel().setText(Constants.INVALID_USERNAME_OR_PASSWORD);
         }
     }
+     */
 
     /**
      * Validates the user inputs for username and password.

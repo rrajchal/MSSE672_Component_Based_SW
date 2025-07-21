@@ -2,19 +2,19 @@ package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
 import com.topcard.domain.Player;
+import com.topcard.network.GameClient;
+import com.topcard.network.GameMessage;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.view.AddPlayerView;
-import com.topcard.presentation.view.GameView;
 import com.topcard.presentation.view.OptionsView;
 import com.topcard.presentation.view.UpdateView;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
@@ -28,7 +28,6 @@ import java.util.List;
  *
  * <p>
  * Author: Rajesh Rajchal
- * Date: 06/30/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
@@ -76,6 +75,7 @@ public class OptionsController {
      * Handles the event when the "Play Game" button is clicked.
      * It initializes the JavaFX environment, retrieves a list of players, and starts the game view.
      */
+    /*
     private void handlePlayGame() {
         // Initialize JavaFX environment if not already initialized
         new JFXPanel();
@@ -92,6 +92,13 @@ public class OptionsController {
                 JOptionPane.showMessageDialog(optionsView, "Failed to start the game view.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+    }
+    */
+    private void handlePlayGame() {
+        new JFXPanel();
+        Platform.setImplicitExit(false);
+        GameMessage startGameMessage = new GameMessage("START_GAME", null);
+        GameClient.getInstance().send(startGameMessage);
     }
 
     /**
