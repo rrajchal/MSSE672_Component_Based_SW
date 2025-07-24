@@ -14,9 +14,9 @@ import java.util.List;
 public class SocketGameController {
 
     private static final Logger logger = LogManager.getLogger(SocketGameController.class);
-    private final ObjectOutputStream out;
-    private final ObjectInputStream in;
-    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+    Socket socket;
 
     private final Player localPlayer;
 
@@ -88,5 +88,28 @@ public class SocketGameController {
             sb.append(p.getUsername()).append(" ");
         }
         JOptionPane.showMessageDialog(null, sb.toString().trim(), "Game Result", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Closes the client-side streams and socket.
+     */
+    public void disconnect() {
+        try {
+            if (out != null) {
+                out.close();
+                out = null; // Clear reference
+            }
+            if (in != null) {
+                in.close();
+                in = null; // Clear reference
+            }
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+                socket = null; // Clear reference
+            }
+            logger.info("SocketGameController disconnected.");
+        } catch (IOException e) {
+            logger.error("Error during disconnect: " + e.getMessage());
+        }
     }
 }

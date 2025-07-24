@@ -41,7 +41,7 @@ public class GameServer {
 
             logger.info("Player joined: " + player.getUsername() + ". Points: " + player.getPoints());
 
-            sendAll(new GameMessage("LOBBY_STATUS", connectedPlayers.size()));
+            sendAll(new GameMessage("Game Lobby - Number of Players:", connectedPlayers.size()));
         }
 
         logger.info("All players connected. Waiting for START_GAME...");

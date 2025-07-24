@@ -62,7 +62,7 @@ public class GameClient {
         try {
             out.writeObject(msg);
             out.flush();
-            logger.info("📤 Sent message: " + msg.getType());
+            logger.info("Sent message: " + msg.getType());
         } catch (IOException e) {
             logger.error("Error sending message: " + e.getMessage());
         }
@@ -71,6 +71,7 @@ public class GameClient {
     /**
      * Listens for incoming messages from the server.
      */
+    @SuppressWarnings("unchecked")
     private void listen() {
         try {
             while (true) {
@@ -81,6 +82,10 @@ public class GameClient {
                     case "HANDS" -> displayHands((List<Card[]>) msg.getPayload());
                     case "WINNERS" -> announceWinners((List<Player>) msg.getPayload());
                     case "POINTS_UPDATED" -> launchGameView((List<Player>) msg.getPayload());
+                    case "SHUTDOWN" -> {
+                        logger.info("Received SHUTDOWN message from server. Terminating listener.");
+                        throw new EOFException("Server requested shutdown"); // This will break the while(true) loop
+                    }
                     default -> logger.debug("Unknown message type: " + msg.getType());
                 }
             }
@@ -117,6 +122,23 @@ public class GameClient {
                 logger.error("Failed to launch GameView: " + ex.getMessage());
             }
         });
+    }
+
+    /**
+     * Closes client-side input and output streams to gracefully terminate the connection with the server.
+     * Helps prevent resource leaks and ensures the server recognizes the end of communication.
+     */
+    public void disconnect() {
+        try {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+        } catch (IOException e) {
+            logger.error("Error during disconnect: {}", e.getMessage());
+        }
     }
 
     /**

@@ -17,5 +17,5 @@ CP+=":$BASE_DIR/lib/mysql-connector-j-8.0.33.jar"
 CP+=":$BASE_DIR/lib/byte-buddy-1.12.23.jar"
 CP+=":$BASE_DIR/lib/antlr4-runtime-4.9.3.jar"
 
-echo "🚀 Starting TopCard Server..."
+echo "Starting TopCard Server..."
 java -cp "$CP" com.topcard.network.GameServer
