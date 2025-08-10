@@ -1,0 +1,10 @@
+<services>
+    <service>
+        <interface>com.topcard.service.player.IPlayerService</interface>
+        <implementation>com.topcard.service.player.PlayerService</implementation>
+    </service>
+    <service>
+        <interface>com.topcard.service.card.ICardService</interface>
+        <implementation>com.topcard.service.card.CardService</implementation>
+    </service>
+</services>

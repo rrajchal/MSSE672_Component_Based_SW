@@ -22,7 +22,7 @@ public class ServiceFactoryTest {
     @Test
     public void testCreateService() {
         List<Player> players = getPlayers();
-        IGameService gameService = ServiceFactory.createService(GameService.class, players);
+        IGameService gameService = ServiceFactory.createService(IGameService.class, players);
         assertNotNull(gameService);
         assertInstanceOf(GameService.class, gameService);
     }
@@ -78,4 +78,22 @@ public class ServiceFactoryTest {
             throw new RuntimeException("Failed to delete all player data", e);
         }
     }
+
+    // Verifies that ServiceFactory returns the same instance for repeated service requests to confirm singleton behavior
+    @Test
+    public void testSingletonInstanceReuse() {
+        ICardService firstInstance = ServiceFactory.createService(CardService.class);
+        ICardService secondInstance = ServiceFactory.createService(CardService.class);
+        assertSame(firstInstance, secondInstance, "ServiceFactory should reuse the same instance");
+    }
+
+    // Tests ServiceFactory's ability to instantiate services using parameterized constructors via reflection.
+    @Test
+    public void testConstructorWithArguments() {
+        List<Player> players = getPlayers();
+        IGameService gameService = ServiceFactory.createService(IGameService.class, players);
+        assertNotNull(gameService, "GameService should be instantiated with players");
+        assertEquals(players.size(), gameService.getPlayers().size(), "Players should be correctly passed to GameService");
+    }
+
 }

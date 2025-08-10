@@ -1,46 +1,102 @@
 package com.topcard.service.factory;
 
-import com.topcard.domain.Player;
 import com.topcard.exceptions.TopCardException;
 import com.topcard.marker.TopCardMarker;
-import com.topcard.service.game.GameService;
+import com.topcard.xml.sax.SaxParserUtil;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * ServiceFactory is a factory class responsible for creating service instances
- * for the TopCard game. This class implements the TopCardMarker interface.
- * <p>
- *  Author: Rajesh Rajchal
- *  Date: 06/30/2025
+ * ServiceFactory loads service mappings from services.xml using SAX and instantiates services dynamically.
+ * Author: Rajesh Rajchal
+ * Date: 08/10/2025
  */
 public class ServiceFactory implements TopCardMarker {
 
-    /**
-     * Creates an instance of the specified service class. If a list of players is provided,
-     * it creates an instance of GameService. Otherwise, it creates an instance of PlayerService
-     * or CardService.
-     *
-     * @param serviceClass the class of the service to create
-     * @param args         the optional arguments (e.g., list of players for GameService)
-     * @param <T>          the type of the service to create
-     * @return a new instance of the specified service
-     */
-    public static <T> T createService(Class<T> serviceClass, Object... args) {
+    private static final Map<Class<?>, Object> serviceInstances = new HashMap<>();
+    private static final Map<Class<?>, Class<?>> serviceMappings = new HashMap<>();
+
+    static {
         try {
-            if (args == null || args.length == 0) {
-                // Create an instance of PlayerService or CardService
-                return serviceClass.getDeclaredConstructor().newInstance();
-            } else {
-                // Create an instance of GameService with players
-                return serviceClass.getDeclaredConstructor(List.class).newInstance(args);
+            InputStream inputStream = ServiceFactory.class.getClassLoader().getResourceAsStream("services.xml");
+            if (inputStream == null) {
+                throw new TopCardException("services.xml not found in classpath.");
             }
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new TopCardException(e);
+
+            Map<String, String> mappings = new SaxParserUtil().parseServiceMappings(inputStream);
+
+            for (Map.Entry<String, String> entry : mappings.entrySet()) {
+                Class<?> interfaceClass = Class.forName(entry.getKey());
+                Class<?> implClass = Class.forName(entry.getValue());
+                serviceMappings.put(interfaceClass, implClass);
+            }
+        } catch (Exception e) {
+            throw new TopCardException("Failed to load service mappings from XML", e);
         }
     }
-}
 
+    /**
+     * Creates or retrieves an instance of the specified service interface or class.
+     *
+     * @param requestedClass the interface or concrete class of the service
+     * @param args optional constructor arguments
+     * @param <T> the type of the service
+     * @return an instance of the service
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T createService(Class<T> requestedClass, Object... args) {
+        try {
+            if (serviceInstances.containsKey(requestedClass)) {
+                return (T) serviceInstances.get(requestedClass);
+            }
+
+            // Find implementation from mapping or fallback to requested class itself
+            Class<?> implClass = serviceMappings.getOrDefault(requestedClass, requestedClass);
+
+            Object instance;
+
+            if (args == null || args.length == 0) {
+                instance = implClass.getDeclaredConstructor().newInstance();
+            } else {
+                Constructor<?> matched = getConstructor(args, implClass);
+                instance = matched.newInstance(args);
+            }
+
+            serviceInstances.put(requestedClass, instance);
+            return (T) instance;
+
+        } catch (Exception e) {
+            throw new TopCardException("Failed to instantiate service: " + requestedClass.getName(), e);
+        }
+    }
+
+    private static Constructor<?> getConstructor(Object[] args, Class<?> implClass) {
+        Constructor<?>[] constructors = implClass.getDeclaredConstructors();
+        Constructor<?> matched = null;
+
+        for (Constructor<?> constructor : constructors) {
+            Class<?>[] paramTypes = constructor.getParameterTypes();
+            if (paramTypes.length == args.length) {
+                boolean match = true;
+                for (int i = 0; i < paramTypes.length; i++) {
+                    if (!paramTypes[i].isAssignableFrom(args[i].getClass())) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    matched = constructor;
+                    break;
+                }
+            }
+        }
+
+        if (matched == null) {
+            throw new TopCardException("No matching constructor found for: " + implClass.getName());
+        }
+        return matched;
+    }
+}

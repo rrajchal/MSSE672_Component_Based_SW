@@ -33,7 +33,7 @@ public class GameManagerTest {
 
     @Test
     public void testDisplayWinners() {
-        List<Player> winners = players.subList(0, 2);
+        List<Player> winners = gameManager.getPlayers().subList(0, 2);
         gameManager.displayWinners(winners); // Check the console output for the correct winner display
     }
 

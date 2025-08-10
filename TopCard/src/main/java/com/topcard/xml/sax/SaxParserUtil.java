@@ -1,6 +1,7 @@
 package com.topcard.xml.sax;
 
 import com.topcard.domain.Player;
+import com.topcard.exceptions.TopCardException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -11,6 +12,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class to parse XML files using the SAX API.
@@ -53,5 +55,17 @@ public class SaxParserUtil {
             logger.error("An unexpected error occurred during SAX parsing: " + e.getMessage());
         }
         return null; // Return null if any error occurred
+    }
+
+    public Map<String, String> parseServiceMappings(InputStream xmlInputStream) {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            ServiceMappingSaxHandler handler = new ServiceMappingSaxHandler();
+            saxParser.parse(xmlInputStream, handler);
+            return handler.getServiceMappings();
+        } catch (Exception e) {
+            throw new TopCardException("Error parsing services.xml", e);
+        }
     }
 }

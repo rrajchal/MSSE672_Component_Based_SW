@@ -2,7 +2,6 @@ package com.topcard.network;
 
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
-import com.topcard.network.GameMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
