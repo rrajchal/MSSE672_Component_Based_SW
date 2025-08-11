@@ -3,6 +3,7 @@ package com.topcard.network;
 import com.topcard.dao.player.PlayerDaoImpl;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
+import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.view.GameView;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -41,7 +42,7 @@ public class GameClient {
      * Connects to the server and registers the player.
      */
     public void connect(String host, Player player) throws IOException {
-        Socket socket = new Socket(host, 12345);
+        Socket socket = new Socket(host, Constants.PORT);
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
 

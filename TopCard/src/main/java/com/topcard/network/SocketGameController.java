@@ -2,6 +2,7 @@ package com.topcard.network;
 
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
+import com.topcard.presentation.common.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +11,12 @@ import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
+/**
+ * Handles client-side communication with the TopCard game server over a socket connection.
+ * This controller manages the local player's connection, sends a join request,
+ * listens for game updates (hands, points, winners), and displays relevant information.
+ * It runs a background thread to process incoming messages and provides a method to disconnect cleanly.
+ */
 public class SocketGameController {
 
     private static final Logger logger = LogManager.getLogger(SocketGameController.class);
@@ -21,7 +28,7 @@ public class SocketGameController {
 
     public SocketGameController(Player player, String host) throws IOException {
         this.localPlayer = player;
-        this.socket = new Socket(host, 12345);
+        this.socket = new Socket(host, Constants.PORT);
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
         sendJoinRequest();
@@ -40,17 +47,10 @@ public class SocketGameController {
                 while (true) {
                     GameMessage msg = (GameMessage) in.readObject();
                     switch (msg.getType()) {
-                        case "HANDS" -> {
-                            List<Card[]> hands = (List<Card[]>) msg.getPayload();
-                            displayCards(hands);
-                        }
-                        case "POINTS_UPDATED" -> {
-                            List<Player> updatedPlayers = (List<Player>) msg.getPayload();
-                            displayPoints(updatedPlayers);
-                        }
-                        case "WINNERS" -> {
-                            List<Player> winners = (List<Player>) msg.getPayload();
-                            showWinners(winners);
+                        case "HANDS", "POINTS_UPDATED", "WINNERS" -> {
+                            // These message types are processed by the game logic.
+                            // The controller acknowledges them to maintain compatibility but does not act on them directly.
+                            // No action or print messages needed here.
                         }
                         default -> logger.error("Unrecognized message: " + msg.getType());
                     }
@@ -61,50 +61,22 @@ public class SocketGameController {
         }).start();
     }
 
-    private void displayCards(List<Card[]> hands) {
-        Card[] myHand = hands.stream()
-                .filter(hand -> hand[0] != null && localPlayer.getHand()[0] != null)
-                .findFirst().orElse(null);
-
-        if (myHand != null) {
-            logger.info("Your Hand:");
-            for (Card c : myHand) {
-                logger.info(" - " + c);
-            }
-        }
-    }
-
-    private void displayPoints(List<Player> players) {
-        logger.info("Updated Points:");
-        for (Player p : players) {
-            logger.info(p.getUsername() + ": " + p.getPoints());
-        }
-    }
-
-    private void showWinners(List<Player> winners) {
-        StringBuilder sb = new StringBuilder("Winner(s): ");
-        for (Player p : winners) {
-            sb.append(p.getUsername()).append(" ");
-        }
-        JOptionPane.showMessageDialog(null, sb.toString().trim(), "Game Result", JOptionPane.INFORMATION_MESSAGE);
-    }
-
     /**
-     * Closes the client-side streams and socket.
+     * Closes the client-side streams and socket and clear references.
      */
     public void disconnect() {
         try {
             if (out != null) {
                 out.close();
-                out = null; // Clear reference
+                out = null;
             }
             if (in != null) {
                 in.close();
-                in = null; // Clear reference
+                in = null;
             }
             if (socket != null && !socket.isClosed()) {
                 socket.close();
-                socket = null; // Clear reference
+                socket = null;
             }
             logger.info("SocketGameController disconnected.");
         } catch (IOException e) {

@@ -11,7 +11,8 @@ This project transforms the original single-player TopCard game into a multiplay
 
 ## Key Components
 - **GameServer**: Listens for incoming client connections and manages the shared game state.
-- **SocketGameController**: Handles server-side logic and routes messages between clients.
+- **GameServerHandler**: A dedicated thread handler that manages the communication for a single client connection. This design prevents the server from blocking and allows it to handle multiple players concurrently.
+- **SocketGameController**: Manages client-side communication with the server, sending and receiving game messages.
 - **GameClient**: Connects to the server, renders the GUI, and enables player interaction.
 
 ## Communication Flow
@@ -22,9 +23,9 @@ This project transforms the original single-player TopCard game into a multiplay
 
 ## How to Launch the Game
 - Build the project: `mvn clean install`. It generates TopCard-1.0-SNAPSHOT-jar-with-dependencies.jar
-- Start the server service: `./run-server.sh` (or mannually with this command. Before launching, make sure that the classpath ($CP) includes all required dependencies and compiled classes. Then run: `java -cp "$CP" com.topcard.network.GameServer
+- Start the server service: `./run-server.sh` (or manually with this command. Before launching, make sure that the classpath ($CP) includes all required dependencies and compiled classes. Then run: `java -cp "$CP" com.topcard.network.GameServer
   `)
-- Start the client service: `./run-client_playgame.sh` (Alternatively, run them manually: `for i in a b c d; do
-  java -jar ./target/TopCard-1.0-SNAPSHOT-jar-with-dependencies.jar "$i" &
-  done`)
-- For this game, all four users need to log in and click on "Play Game"
+- Start the client service: `./run-client_playgame.sh` (Alternatively, run them manually: 
+  java -jar ./target/TopCard-1.0-SNAPSHOT-jar-with-dependencies.jar &`
+- When any player clicks "Play Game", a 5-second countdown begins. During this time, other players may join. If fewer than four players are present when the countdown ends, the server automatically fills the remaining slots with up to three auto-generated players from the database. This ensures the game always starts with four participants, even if only one real player is available.
+
