@@ -10,19 +10,24 @@ import com.topcard.service.game.GameService;
 import com.topcard.service.game.IGameService;
 import com.topcard.service.player.IPlayerService;
 import com.topcard.service.player.PlayerService;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 import java.util.List;
 
 public class ServiceFactoryTest {
 
+    @Before
+    public void setUp() {
+        ServiceFactory.reset();
+    }
+
     @Test
     public void testCreateService() {
         List<Player> players = getPlayers();
-        IGameService gameService = ServiceFactory.createService(IGameService.class, players);
+        IGameService gameService = ServiceFactory.createService(GameService.class, players);
         assertNotNull(gameService);
         assertInstanceOf(GameService.class, gameService);
     }
@@ -91,9 +96,8 @@ public class ServiceFactoryTest {
     @Test
     public void testConstructorWithArguments() {
         List<Player> players = getPlayers();
-        IGameService gameService = ServiceFactory.createService(IGameService.class, players);
+        IGameService gameService = ServiceFactory.createService(GameService.class, players);
         assertNotNull(gameService, "GameService should be instantiated with players");
         assertEquals(players.size(), gameService.getPlayers().size(), "Players should be correctly passed to GameService");
     }
-
 }

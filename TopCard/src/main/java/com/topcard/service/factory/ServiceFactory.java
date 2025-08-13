@@ -99,4 +99,11 @@ public class ServiceFactory implements TopCardMarker {
         }
         return matched;
     }
+
+    /**
+     * Clears all cached service instances. Intended for test isolation.
+     */
+    public static void reset() {
+        serviceInstances.clear();
+    }
 }

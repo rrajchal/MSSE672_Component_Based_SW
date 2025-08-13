@@ -23,7 +23,7 @@ public class GameServer {
 
     private static final Logger logger = LogManager.getLogger(GameServer.class);
     private static final int PORT = Constants.PORT;
-    private static final int START_GAME_TIMEOUT_MS = 5000;
+    private static final int START_GAME_TIMEOUT_MS = 5;
     private static final int maxPlayer = Constants.MAX_PLAYERS;
 
     private final List<ObjectOutputStream> clientOutputs = new CopyOnWriteArrayList<>();

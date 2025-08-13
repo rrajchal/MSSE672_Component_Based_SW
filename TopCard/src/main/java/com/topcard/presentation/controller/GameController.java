@@ -3,10 +3,14 @@ package com.topcard.presentation.controller;
 import com.topcard.business.GameManager;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.AudioClip;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +27,7 @@ import java.util.stream.Collectors;
  *
  * <p>
  * Author: Rajesh Rajchal
- * Date: 06/30/2025
+ * Date: 08/12/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
@@ -55,9 +59,35 @@ public class GameController {
     private int betAmount = 0;
     private List<Player> players;
     private GameManager gameManager;
+    private ImageView[][] playerCards;
+
+    // Add a new field for the sound effect
+    private AudioClip cardDealSound;
+
+    private final int CARD_DISTRIBUTE_DELAY = 100;
 
     /**
-     * Sets the list of players name in the UI.
+     * Initializes the controller. This method is automatically called after the FXML has been loaded.
+     */
+    @FXML
+    public void initialize() {
+        playerCards = new ImageView[][]{
+                {player1C1, player1C2, player1C3},
+                {player2C1, player2C2, player2C3},
+                {player3C1, player3C2, player3C3},
+                {player4C1, player4C2, player4C3}
+        };
+
+        // Initialize the AudioClip for the card dealing sound.
+        try {
+            cardDealSound = new AudioClip(Objects.requireNonNull(getClass().getResource("/sound/dealCardSound.mp3")).toString());
+        } catch (NullPointerException e) {
+            logger.error("Could not load sound file: /sound/dealCardSound.mp3", e);
+        }
+    }
+
+    /**
+     * Sets the list of players name and initial balance in the UI.
      *
      * @param players the list of players
      */
@@ -89,8 +119,7 @@ public class GameController {
 
     /**
      * Handles the event when the start button is pressed.
-     * Validates the bet amount, starts the game, deals cards, executes the betting round,
-     * updates player point changes, and displays the winners.
+     * Validates the bet amount, starts the game, and initiates the card dealing animation.
      */
     @FXML
     private void startButtonPressed() {
@@ -101,14 +130,51 @@ public class GameController {
         if (valid) {
             // Start the game and deal cards
             gameManager.startGame();
+            displayCardsSequentially();
+        }
+    }
 
+    /**
+     * Creates and plays a Timeline to display cards one by one in a round-robin fashion.
+     */
+    private void displayCardsSequentially() {
+        List<Card[]> hands = gameManager.getHands();
+        Timeline timeline = new Timeline();
+        Duration delay = Duration.ZERO;
+
+        // Loop through each player and each card to create a sequential animation
+        // Outer loop for the cards to be dealt (1st, 2nd, 3rd)
+        for (int c = 0; c < 3; c++) {
+            // Inner loop for each player
+            for (int p = 0; p < hands.size(); p++) {
+                final int playerIndex = p;
+                final int cardIndex = c;
+
+                // Add a delay for each card
+                delay = delay.add(Duration.millis(CARD_DISTRIBUTE_DELAY));
+
+                KeyFrame keyFrame = new KeyFrame(delay, event -> {
+                    Card currentCard = hands.get(playerIndex)[cardIndex];
+                    ImageView imageView = playerCards[playerIndex][cardIndex];
+                    setCardImage(imageView, currentCard);
+
+                    // Play the sound effect for each card dealt
+                    if (cardDealSound != null) {
+                        cardDealSound.play();
+                    }
+                });
+
+                timeline.getKeyFrames().add(keyFrame);
+            }
+        }
+
+        // After the last card is displayed, run the rest of the game logic
+        timeline.setOnFinished(event -> {
             // Clone the players list
             List<Player> initialPlayers = clonePlayers(players);
 
             // Execute betting round
             List<Player> updatedPlayers = gameManager.executeBettingRound(betAmount);
-
-            displayCards();
 
             updatePlayerPointChanges(initialPlayers, updatedPlayers);
 
@@ -116,7 +182,10 @@ public class GameController {
             List<Player> winners = gameManager.determineWinner();
             displayWinners(winners);
             setPlayersPoints(updatedPlayers);
-        }
+        });
+
+        // Start the animation
+        timeline.play();
     }
 
     /**
@@ -142,33 +211,6 @@ public class GameController {
             winnerTextField.setText("Invalid amount in the Bet TextField");
         }
         return false;
-    }
-
-    /**
-     * Display cards in the ImageView elements.
-     */
-    private void displayCards() {
-        List<Card[]> hands = gameManager.getHands();
-
-        // Player 1
-        setCardImage(player1C1, hands.get(0)[0]);
-        setCardImage(player1C2, hands.get(0)[1]);
-        setCardImage(player1C3, hands.get(0)[2]);
-
-        // Player 2
-        setCardImage(player2C1, hands.get(1)[0]);
-        setCardImage(player2C2, hands.get(1)[1]);
-        setCardImage(player2C3, hands.get(1)[2]);
-
-        // Player 3
-        setCardImage(player3C1, hands.get(2)[0]);
-        setCardImage(player3C2, hands.get(2)[1]);
-        setCardImage(player3C3, hands.get(2)[2]);
-
-        // Player 4
-        setCardImage(player4C1, hands.get(3)[0]);
-        setCardImage(player4C2, hands.get(3)[1]);
-        setCardImage(player4C3, hands.get(3)[2]);
     }
 
     /**
