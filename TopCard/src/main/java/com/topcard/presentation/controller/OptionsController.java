@@ -2,8 +2,8 @@ package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
 import com.topcard.domain.Player;
-import com.topcard.network.GameClient;
-import com.topcard.network.GameMessage;
+import com.topcard.network.game.GameClient;
+import com.topcard.network.game.GameMessage;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.view.AddPlayerView;
 import com.topcard.presentation.view.GameView;

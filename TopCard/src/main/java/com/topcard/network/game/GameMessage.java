@@ -1,4 +1,4 @@
-package com.topcard.network;
+package com.topcard.network.game;
 
 import java.io.Serializable;
 

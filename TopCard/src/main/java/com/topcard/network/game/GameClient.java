@@ -1,4 +1,4 @@
-package com.topcard.network;
+package com.topcard.network.game;
 
 import com.topcard.dao.player.PlayerDaoImpl;
 import com.topcard.domain.Card;
@@ -42,7 +42,7 @@ public class GameClient {
      * Connects to the server and registers the player.
      */
     public void connect(String host, Player player) throws IOException {
-        Socket socket = new Socket(host, Constants.PORT);
+        Socket socket = new Socket(host, Constants.GAME_PORT);
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
 
@@ -163,7 +163,7 @@ public class GameClient {
 
         new Thread(() -> {
             try {
-                GameClient.getInstance().connect("localhost", player.get());
+                GameClient.getInstance().connect(Constants.LOCAL_HOST, player.get());
             } catch (IOException e) {
                 logger.error("Connection error: " + e.getMessage());
             }

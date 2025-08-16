@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>21</javafx.version>
         <!--<main.class>com.topcard.MainApp</main.class>-->
-        <main.class>com.topcard.network.GameClient</main.class>
+        <main.class>com.topcard.network.game.GameClient</main.class>
     </properties>
 
     <dependencies>

@@ -1,4 +1,4 @@
-package com.topcard.network;
+package com.topcard.network.game;
 
 import com.topcard.business.GameManager;
 import com.topcard.business.PlayerManager;
@@ -29,7 +29,7 @@ public class GameServer {
 
     private static final Logger logger = LogManager.getLogger(GameServer.class);
 
-    private static final int PORT = Constants.PORT;
+    private static final int PORT = Constants.GAME_PORT;
     private static final int START_GAME_TIMEOUT_SECONDS = 5;
     private static final int MAX_PLAYERS = Constants.MAX_PLAYERS;
     private static final int THREAD_POOL_SIZE = 4;

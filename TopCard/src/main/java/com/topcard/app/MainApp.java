@@ -1,26 +1,19 @@
 package com.topcard.app;
 
-import com.topcard.exceptions.TopCardException;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
-import com.topcard.presentation.view.LoginView;
 import com.topcard.presentation.controller.LoginController;
-import org.apache.logging.log4j.Level;
+import com.topcard.presentation.view.LoginView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 /**

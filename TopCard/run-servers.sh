@@ -17,5 +17,8 @@ CP+=":$BASE_DIR/lib/mysql-connector-j-8.0.33.jar"
 CP+=":$BASE_DIR/lib/byte-buddy-1.12.23.jar"
 CP+=":$BASE_DIR/lib/antlr4-runtime-4.9.3.jar"
 
-echo "Starting TopCard Server..."
-java -cp "$CP" com.topcard.network.GameServer
+echo "Starting Authentication Server on port 9090..."
+java -cp "$CP" com.topcard.network.authentication.AuthenticationServer &
+
+echo "Starting TopCard Game Server on port 12345..."
+java -cp "$CP" com.topcard.network.game.GameServer

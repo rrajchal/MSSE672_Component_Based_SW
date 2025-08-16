@@ -1,4 +1,4 @@
-package com.topcard.network;
+package com.topcard.network.game;
 
 import com.topcard.domain.Player;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +42,6 @@ public class GameServerHandler implements Runnable {
     public void run() {
         try {
             while (true) {
-                // Blocks until a new message is received
                 GameMessage message = (GameMessage) in.readObject();
                 server.handleMessage(message, player);
             }

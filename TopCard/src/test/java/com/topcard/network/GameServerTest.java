@@ -1,6 +1,8 @@
 package com.topcard.network;
 
 import com.topcard.domain.Player;
+import com.topcard.network.game.GameMessage;
+import com.topcard.network.game.GameServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

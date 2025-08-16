@@ -2,7 +2,8 @@ package com.topcard.presentation.controller;
 
 import com.topcard.business.PlayerManager;
 import com.topcard.domain.Player;
-import com.topcard.network.GameClient;
+import com.topcard.network.game.GameClient;
+import com.topcard.network.game.GameMessage;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.common.Validation;
@@ -16,6 +17,8 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -83,11 +86,20 @@ public class LoginController extends JFrame {
             Player loggedInPlayer = playerManager.getPlayerByUsername(username);
 
             // Attempt to connect to the server first
-            if (isServerRunning()) {
+            if (areServersRunning()) {
+                GameMessage response = sendAuthRequest("LOGIN", loggedInPlayer);
+                Player authenticatedPlayer = null;
+                if (response != null && "AUTH_SUCCESS".equals(response.getType())) {
+                    authenticatedPlayer = (Player) response.getPayload();
+                }
                 logger.info("Server is available. Attempting to join online game.");
                 try {
-                    GameClient.getInstance().connect("localhost", loggedInPlayer);
-                    launchOptionsView(username, true); // Pass a flag indicating online mode
+                    if (authenticatedPlayer != null) {
+                        GameClient.getInstance().connect(Constants.LOCAL_HOST, authenticatedPlayer);
+                        launchOptionsView(username, true); // Pass a flag indicating online mode
+                    } else {
+                        throw new Exception("No authenticated player");
+                    }
                 } catch (Exception e) {
                     logger.error("Failed to join multiplayer server: " + e.getMessage());
                     launchOptionsView(username, false); // Fallback to offline
@@ -99,6 +111,21 @@ public class LoginController extends JFrame {
         } else {
             loginView.getMessageLabel().setForeground(Color.RED);
             loginView.getMessageLabel().setText(Constants.INVALID_USERNAME_OR_PASSWORD);
+        }
+    }
+
+    private GameMessage sendAuthRequest(String type, Player player) {
+        try (Socket socket = new Socket(Constants.LOCAL_HOST, Constants.AUTH_PORT);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+
+            out.writeObject(new GameMessage(type, player));
+            out.flush();
+            return (GameMessage) in.readObject();
+
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("Authentication request failed: " + e.getMessage());
+            return null;
         }
     }
 
@@ -118,20 +145,38 @@ public class LoginController extends JFrame {
     }
 
     /**
-     * Checks if the game server is reachable by attempting a socket connection.
+     * Checks if the servers are reachable by attempting a socket connection.
      * This method acts as a client-side replacement for a server-side method.
      *
      * @return true if a connection can be established, false otherwise.
      */
-    private boolean isServerRunning() {
+    private boolean areServersRunning() {
+        boolean authAvailable = isServerReachable(Constants.LOCAL_HOST, Constants.AUTH_PORT, "Authentication");
+        boolean gameAvailable = isServerReachable(Constants.LOCAL_HOST, Constants.GAME_PORT, "Game");
+
+        return authAvailable && gameAvailable;
+    }
+
+    /**
+     * Attempts to establish a TCP connection to the specified server and port to verify whether a remote server is actively
+     * listening and reachable from the client side. It performs a non-blocking connection attempt with a timeout and logs the result.
+     * This is useful for determining server availability before initiating gameplay or authentication logic.
+     *
+     * @param host the hostname or IP address of the server (e.g., "localhost")
+     * @param port the port number the server is expected to be listening on
+     * @param serverName a descriptive name for logging purposes (e.g., "Authentication", "Game")
+     * @return true if the server is reachable within the timeout window; false otherwise
+     */
+    private boolean isServerReachable(String host, int port, String serverName) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress("localhost", Constants.PORT), 50); // timeout
+            socket.connect(new InetSocketAddress(host, port), 1000);
+            logger.info(serverName + " Server is reachable on port " + port);
             return true;
         } catch (SocketTimeoutException e) {
-            logger.warn("Server is unreachable: connection timed out.");
+            logger.warn(serverName + " Server connection timed out.");
             return false;
         } catch (IOException e) {
-            logger.warn("Server is not available at " + "localhost" + ":" + Constants.PORT + " (" + e.getMessage() + ")");
+            logger.warn(serverName + " Server is not available at " + host + ":" + port + " (" + e.getMessage() + ")");
             return false;
         }
     }

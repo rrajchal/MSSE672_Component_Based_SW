@@ -1,15 +1,12 @@
-package com.topcard.network;
+package com.topcard.network.game;
 
-import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
 
 /**
  * Handles client-side communication with the TopCard game server over a socket connection.
@@ -28,7 +25,7 @@ public class SocketGameController {
 
     public SocketGameController(Player player, String host) throws IOException {
         this.localPlayer = player;
-        this.socket = new Socket(host, Constants.PORT);
+        this.socket = new Socket(host, Constants.GAME_PORT);
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
         sendJoinRequest();
