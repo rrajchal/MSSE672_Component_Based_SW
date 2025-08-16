@@ -18,54 +18,80 @@ import java.util.concurrent.Executors;
 
 /**
  * Handles server-side communication and multiplayer game flow for TopCard.
+ *
+ * <p>
+ * Author: Rajesh Rajchal
+ * Date: 08/15/2025
+ * Subject: MSSE 672 Component-Based Software Development
+ * </p>
  */
 public class GameServer {
 
     private static final Logger logger = LogManager.getLogger(GameServer.class);
+
     private static final int PORT = Constants.PORT;
-    private static final int START_GAME_TIMEOUT_MS = 5;
-    private static final int maxPlayer = Constants.MAX_PLAYERS;
+    private static final int START_GAME_TIMEOUT_SECONDS = 5;
+    private static final int MAX_PLAYERS = Constants.MAX_PLAYERS;
+    private static final int THREAD_POOL_SIZE = 4;
+    private static final int FULL_LOBBY_CHECK_INTERVAL_MS = 100;
+    private static final int TIMEOUT_CHECK_INTERVAL_MS = 500;
+    private static final int BETS_ROUND_NUMBER = 1;
 
     private final List<ObjectOutputStream> clientOutputs = new CopyOnWriteArrayList<>();
     private final List<Player> connectedPlayers = new CopyOnWriteArrayList<>();
     private final List<Socket> clientSockets = new CopyOnWriteArrayList<>();
 
     private boolean gameStarted = false;
-    private final ExecutorService clientThreadPool = Executors.newFixedThreadPool(4);
+    private final ExecutorService clientThreadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
+    /**
+     * Entry point for the server.
+     * @param args Command line arguments.
+     */
+    public static void main(String[] args) {
+        try {
+            new GameServer().start();
+        } catch (Exception e) {
+            logger.error("Error with Game Server", e);
+        }
+    }
+
+    /**
+     * Starts the server, listening for client connections.
+     * @throws Exception if an error occurs while starting the server.
+     */
     public void start() throws Exception {
         ServerSocket serverSocket = new ServerSocket(PORT);
         logger.info("TopCard Server started on port " + PORT);
-
         while (true) {
             try {
-                // Accept new clients if the game hasn't started and we have room
-                if (connectedPlayers.size() < 4 && !gameStarted) {
+                if (connectedPlayers.size() < MAX_PLAYERS && !gameStarted) {
                     Socket socket = serverSocket.accept();
                     logger.info("New client connected from " + socket.getInetAddress());
 
                     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-                    // First message is always the JOIN message with the Player object
                     GameMessage joinMessage = (GameMessage) in.readObject();
                     if ("JOIN".equals(joinMessage.getType())) {
                         Player player = (Player) joinMessage.getPayload();
 
-                        connectedPlayers.add(player);
-                        clientOutputs.add(out);
-                        clientSockets.add(socket);
+                        if (!connectedPlayers.contains(player)) {
+                            connectedPlayers.add(player);
+                            clientOutputs.add(out);
+                            clientSockets.add(socket);
 
-                        logger.info("Player joined: " + player.getUsername() + ". Points: " + player.getPoints());
-                        logger.info("Will start game in " + START_GAME_TIMEOUT_MS/1000 + " seconds if a player click on 'Player Game'. Players in Lobby: " +  connectedPlayers.size() + " of " + maxPlayer);
-                        sendAll(new GameMessage("Game Lobby - Number of Players:", connectedPlayers.size()));
+                            logger.info("Player joined: " + player.getUsername() + ". Players in Lobby: " +  connectedPlayers.size() + " of " + MAX_PLAYERS);
+                            sendAll(new GameMessage("Game Lobby - Number of Players:", connectedPlayers.size()));
 
-                        // Start a new thread to handle this client's input
-                        clientThreadPool.submit(new GameServerHandler(this, socket, in, out));
+                            clientThreadPool.submit(new GameServerHandler(this, socket, in, out));
+                        } else {
+                            logger.warn("Player " + player.getUsername() + " attempted to join twice. Connection rejected.");
+                            in.close(); out.close(); socket.close();
+                        }
                     }
                 } else {
-                    // Game is full or started, so stop accepting
-                    Thread.sleep(100);
+                    Thread.sleep(FULL_LOBBY_CHECK_INTERVAL_MS);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 logger.error("Error accepting client or reading join message: " + e.getMessage());
@@ -74,31 +100,31 @@ public class GameServer {
     }
 
     /**
-     * Handles game messages from clients.
+     * Handles incoming game messages from clients.
+     * @param message The received game message.
+     * @param player The player who sent the message.
      */
     public synchronized void handleMessage(GameMessage message, Player player) {
         logger.debug("Server received message from " + player.getUsername() + ": " + message.getType());
 
         if ("START_GAME".equals(message.getType()) || "REMATCH".equals(message.getType())) {
-            // Only start the game if it hasn't already begun
             if (!gameStarted) {
                 new Thread(() -> {
                     long startTime = System.currentTimeMillis();
                     logger.info("START_GAME received. Countdown to launch begins...");
 
-                    while (System.currentTimeMillis() - startTime < START_GAME_TIMEOUT_MS) {
-                        if (connectedPlayers.size() == 4) {
+                    while (System.currentTimeMillis() - startTime < START_GAME_TIMEOUT_SECONDS * 1000) {
+                        if (connectedPlayers.size() == MAX_PLAYERS) {
                             logger.info("Four players connected. Starting game immediately.");
                             break;
                         }
                         try {
-                            Thread.sleep(500); // Check every half second
+                            Thread.sleep(TIMEOUT_CHECK_INTERVAL_MS);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
                     }
 
-                    // Double check to prevent multiple starts
                     if (!gameStarted) {
                         logger.info("Countdown complete. Starting game now.");
                         fillMissingPlayersIfNeeded();
@@ -121,7 +147,7 @@ public class GameServer {
         List<Card[]> hands = manager.getHands();
         sendAll(new GameMessage("HANDS", hands));
 
-        List<Player> updatedPlayers = manager.executeBettingRound(1);
+        List<Player> updatedPlayers = manager.executeBettingRound(BETS_ROUND_NUMBER);
         sendAll(new GameMessage("POINTS_UPDATED", updatedPlayers));
 
         List<Player> winners = manager.determineWinner();
@@ -131,7 +157,8 @@ public class GameServer {
     }
 
     /**
-     * Broadcasts a GameMessage to all connected clients.
+     * Broadcasts a message to all connected clients.
+     * @param message The message to broadcast.
      */
     public synchronized void sendAll(GameMessage message) {
         for (ObjectOutputStream out : clientOutputs) {
@@ -144,8 +171,11 @@ public class GameServer {
         }
     }
 
+    /**
+     * Fills the game with additional players if the lobby is not full.
+     */
     private void fillMissingPlayersIfNeeded() {
-        int missing = 4 - connectedPlayers.size();
+        int missing = MAX_PLAYERS - connectedPlayers.size();
         if (missing <= 0) return;
 
         PlayerManager playerManager = new PlayerManager();
@@ -171,14 +201,16 @@ public class GameServer {
                 playerManager.addPlayer(tempPlayer);
                 logger.warn("Created temporary player: " + tempPlayer.getUsername());
             }
-
             connectedPlayers.add(tempPlayer);
             logger.info("Added filler player: " + tempPlayer.getUsername());
         }
     }
 
     /**
-     * Handles client disconnection.
+     * Handles the disconnection of a client.
+     * @param socket The client's socket.
+     * @param in The client's input stream.
+     * @param out The client's output stream.
      */
     public void removeClient(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         int index = clientSockets.indexOf(socket);
@@ -194,17 +226,6 @@ public class GameServer {
             if (socket != null) socket.close();
         } catch (IOException e) {
             logger.error("Error closing client streams: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Entry point for the server.
-     */
-    public static void main(String[] args) {
-        try {
-            new GameServer().start();
-        } catch (Exception e) {
-            logger.error("Error with Game Server");
         }
     }
 

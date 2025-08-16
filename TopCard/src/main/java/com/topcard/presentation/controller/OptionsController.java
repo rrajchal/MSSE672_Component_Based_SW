@@ -6,10 +6,12 @@ import com.topcard.network.GameClient;
 import com.topcard.network.GameMessage;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.view.AddPlayerView;
+import com.topcard.presentation.view.GameView;
 import com.topcard.presentation.view.OptionsView;
 import com.topcard.presentation.view.UpdateView;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +30,7 @@ import java.util.List;
  *
  * <p>
  * Author: Rajesh Rajchal
+ *  Date: 08/15/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
@@ -37,18 +40,21 @@ public class OptionsController {
 
     private final OptionsView optionsView;
     private final JDesktopPane desktopPane;
+    private final boolean isOnline; // boolean flag to track online status
 
     private Player player = null;
 
     /**
-     * Constructor to initialize the options controller with the given options view.
+     * Constructor to initialize the OptionsController.
      *
-     * @param optionsView the options view
-     * @param username the username of the authenticated player
-     * @param desktopPane the desktop pane to manage internal frames
+     * @param optionsView The view associated with this controller.
+     * @param username The username of the logged-in player.
+     * @param isOnline A flag indicating whether the application is running in online mode.
+     * @param desktopPane The desktop pane for managing internal frames.
      */
-    public OptionsController(OptionsView optionsView, String username, JDesktopPane desktopPane) {
+    public OptionsController(OptionsView optionsView, String username, boolean isOnline, JDesktopPane desktopPane) {
         this.optionsView = optionsView;
+        this.isOnline = isOnline; // Store the online status
         this.desktopPane = desktopPane;
         initController(username);
     }
@@ -66,17 +72,22 @@ public class OptionsController {
         player = playerManager.getPlayerByUsername(username);
 
         optionsView.setAddPlayerButtonVisibility(player != null && player.isAdmin());
-        optionsView.getPlayGameButton().addActionListener(e -> handlePlayGame());
+
+        // Conditional action listener based on online status
+        if (isOnline) {
+            optionsView.getPlayGameButton().addActionListener(e -> handlePlayGameOnline());
+        } else {
+            optionsView.getPlayGameButton().addActionListener(e -> handlePlayGameOffline());
+        }
+
         optionsView.getUpdateButton().addActionListener(e -> handleUpdate(username));
         optionsView.getAddPlayerButton().addActionListener(e -> handleAddPlayer());
     }
 
     /**
-     * Handles the event when the "Play Game" button is clicked.
-     * It initializes the JavaFX environment, retrieves a list of players, and starts the game view.
+     * Handles the event when the "Play Game" button is clicked in offline mode.
      */
-    /*
-    private void handlePlayGame() {
+    private void handlePlayGameOffline() {
         // Initialize JavaFX environment if not already initialized
         new JFXPanel();
         Platform.setImplicitExit(false);
@@ -89,12 +100,15 @@ public class OptionsController {
                 gameView.start(stage);
             } catch (Exception e) {
                 logger.error("Failed to start the game view: " + e.getMessage());
-                JOptionPane.showMessageDialog(optionsView, "Failed to start the game view.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(optionsView.getOptionsPanel(), "Failed to start the game view.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
-    */
-    private void handlePlayGame() {
+
+    /**
+     * Handles the event when the "Play Game" button is clicked in online mode.
+     */
+    private void handlePlayGameOnline() {
         new JFXPanel();
         Platform.setImplicitExit(false);
         GameMessage startGameMessage = new GameMessage("START_GAME", null);
@@ -111,7 +125,7 @@ public class OptionsController {
         PlayerManager playerManager = new PlayerManager();
         List<Player> allPlayers = playerManager.getAllPlayers();
         allPlayers.removeIf(p -> p.getUsername().equals(player.getUsername())); // remove the logged-in player from allPlayers
-         List<Player> selectedPlayers = new ArrayList<>();
+        List<Player> selectedPlayers = new ArrayList<>();
         selectedPlayers.add(player); // Add the logged-in player as the first player
 
         Collections.shuffle(allPlayers);
@@ -130,7 +144,6 @@ public class OptionsController {
                 while (playerManager.getPlayerByUsername(tempUsername) != null) {
                     tempUsername = baseUsername + "_" + suffix++;
                 }
-
                 LocalDate dob = LocalDate.of(1900, 1, 1);
                 Player tempPlayer = new Player(tempUsername, "pass" + (i + 1), baseUsername,"Bot", dob);
                 playerManager.addPlayer(tempPlayer);
@@ -138,7 +151,6 @@ public class OptionsController {
                 selectedPlayers.add(tempPlayer);
             }
         }
-
         return selectedPlayers;
     }
 
@@ -149,10 +161,9 @@ public class OptionsController {
      * @param username the username of the authenticated player
      */
     private void handleUpdate(String username) {
-        //disableOptionsView();
         UpdateView updateView = new UpdateView();
         boolean isAdmin = player.isAdmin();
-        new UpdateController(updateView, username, isAdmin, desktopPane); // Pass the desktopPane
+        new UpdateController(updateView, username, isAdmin, desktopPane);
         InternalFrame.addInternalFrame(desktopPane, "Update", updateView.getUpdatePanel(), 700, 400, true);
         attachWindowListener(updateView);
     }
@@ -189,7 +200,6 @@ public class OptionsController {
     private void disableOptionsView() {
         optionsView.getUpdateButton().setEnabled(false);
         optionsView.getAddPlayerButton().setEnabled(false);
-        //fadeTheWindow(0.5f);
     }
 
     /**

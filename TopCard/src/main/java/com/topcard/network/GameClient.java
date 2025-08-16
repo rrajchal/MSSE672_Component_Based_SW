@@ -91,7 +91,7 @@ public class GameClient {
                 }
             }
         } catch (Exception e) {
-            logger.error("🔌 Disconnected from server. " + e.getMessage());
+            logger.error("Disconnected from server. " + e.getMessage());
         }
     }
 

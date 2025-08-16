@@ -3,7 +3,6 @@ package com.topcard.presentation.controller;
 import com.topcard.business.PlayerManager;
 import com.topcard.domain.Player;
 import com.topcard.network.GameClient;
-import com.topcard.network.SocketGameController;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.common.Validation;
@@ -17,6 +16,9 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import javax.swing.*;
 
 /**
@@ -25,7 +27,7 @@ import javax.swing.*;
  *
  * <p>
  * Author: Rajesh Rajchal
- * Date: 06/30/2025
+ * Date: 08/15/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
@@ -66,7 +68,8 @@ public class LoginController extends JFrame {
 
     /**
      * Handles the login process when the login button is clicked.
-     * It gathers the user inputs and initiates the authentication process.
+     * It gathers the user inputs, authenticates, and determines whether
+     * to launch the game in online or offline mode.
      */
     private void handleLogin() {
         String username = loginView.getUsernameField().getText();
@@ -79,66 +82,59 @@ public class LoginController extends JFrame {
             PlayerManager playerManager = new PlayerManager();
             Player loggedInPlayer = playerManager.getPlayerByUsername(username);
 
-            // Connect to multiplayer game
-            try {
-                //new SocketGameController(loggedInPlayer, "localhost");
-                GameClient.getInstance().connect("localhost", loggedInPlayer);
-            } catch (IOException e) {
-                logger.error("Could not connect to game server: " + e.getMessage());
-                JOptionPane.showMessageDialog(loginView.getLoginPanel(),
-                        "Failed to join multiplayer server.",
-                        "Connection Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            // Attempt to connect to the server first
+            if (isServerRunning()) {
+                logger.info("Server is available. Attempting to join online game.");
+                try {
+                    GameClient.getInstance().connect("localhost", loggedInPlayer);
+                    launchOptionsView(username, true); // Pass a flag indicating online mode
+                } catch (Exception e) {
+                    logger.error("Failed to join multiplayer server: " + e.getMessage());
+                    launchOptionsView(username, false); // Fallback to offline
+                }
+            } else {
+                logger.info("Multiplayer server is not running. Launching in offline mode.");
+                launchOptionsView(username, false); // Launch in offline mode
             }
-
-            // Close login frame and show Options
-            JInternalFrame loginFrame = (JInternalFrame) SwingUtilities.getAncestorOfClass(JInternalFrame.class, loginView.getLoginPanel());
-            if (loginFrame != null) {
-                loginFrame.dispose();
-            }
-
-            OptionsView optionsView = new OptionsView();
-            new OptionsController(optionsView, username, desktopPane);
-            InternalFrame.addInternalFrame(desktopPane, "Choose an Option", optionsView.getOptionsPanel(), 400, 200, false);
         } else {
             loginView.getMessageLabel().setForeground(Color.RED);
             loginView.getMessageLabel().setText(Constants.INVALID_USERNAME_OR_PASSWORD);
         }
     }
 
-    /*
-    private void handleLogin() {
-        String username = loginView.getUsernameField().getText();
-        String password = new String(loginView.getPasswordField().getPassword());
-
-        if (validateInputs(loginView.getUsernameField(), username, Constants.USERNAME_CANNOT_HAVE_SPACES) &&
-            validateInputs(loginView.getPasswordField(), password, Constants.PASSWORD_CANNOT_HAVE_SPACES) &&
-            authenticate(username, password)) {
-
-            // Close the LoginView internal frame
-            JInternalFrame loginInternalFrame = (JInternalFrame) SwingUtilities.getAncestorOfClass(JInternalFrame.class, loginView.getLoginPanel());
-            if (loginInternalFrame != null) {
-                loginInternalFrame.dispose();
-            }
-
-            // Initialize and add the options view as an internal frame
-            OptionsView optionsView = new OptionsView();
-            new OptionsController(optionsView, username, desktopPane);
-
-            desktopPane.add(optionsView);
-            desktopPane.revalidate();
-            desktopPane.repaint();
-
-            // Add internal frame
-            InternalFrame.addInternalFrame(desktopPane, "Choose an Option", optionsView.getOptionsPanel(), 400, 200, false);
-        } else {
-            loginView.getMessageLabel().setForeground(Color.RED);
-            loginView.getMessageLabel().setText(Constants.INVALID_USERNAME_OR_PASSWORD);
-        }
-    }
+    /**
+     * Helper method to launch the OptionsView and manage the transition.
+     * @param username The logged-in player's username.
+     * @param isOnline A flag indicating if the game is in online mode.
      */
+    private void launchOptionsView(String username, boolean isOnline) {
+        JInternalFrame loginFrame = (JInternalFrame) SwingUtilities.getAncestorOfClass(JInternalFrame.class, loginView.getLoginPanel());
+        if (loginFrame != null) {
+            loginFrame.dispose();
+        }
+        OptionsView optionsView = new OptionsView();
+        new OptionsController(optionsView, username, isOnline, desktopPane);
+        InternalFrame.addInternalFrame(desktopPane, "Choose an Option", optionsView.getOptionsPanel(), 400, 200, false);
+    }
+
+    /**
+     * Checks if the game server is reachable by attempting a socket connection.
+     * This method acts as a client-side replacement for a server-side method.
+     *
+     * @return true if a connection can be established, false otherwise.
+     */
+    private boolean isServerRunning() {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("localhost", Constants.PORT), 50); // timeout
+            return true;
+        } catch (SocketTimeoutException e) {
+            logger.warn("Server is unreachable: connection timed out.");
+            return false;
+        } catch (IOException e) {
+            logger.warn("Server is not available at " + "localhost" + ":" + Constants.PORT + " (" + e.getMessage() + ")");
+            return false;
+        }
+    }
 
     /**
      * Validates the user inputs for username and password.
@@ -162,7 +158,6 @@ public class LoginController extends JFrame {
     private boolean authenticate(String username, String password) {
         PlayerManager playerManager = new PlayerManager();
         Player player = playerManager.getPlayerByUsername(username);
-
         return username != null && !username.isEmpty() &&
                 password != null && !password.isEmpty() &&
                 player != null && player.getUsername().equals(username) &&
