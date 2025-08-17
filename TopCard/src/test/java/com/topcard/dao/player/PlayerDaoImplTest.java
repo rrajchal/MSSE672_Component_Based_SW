@@ -149,7 +149,7 @@ public class PlayerDaoImplTest {
         boolean result = playerDao.updatePlayer(samplePlayer);
 
         assertTrue(result);
-        verify(mockSession).merge(samplePlayer); // 🛠 Correct Hibernate method for updates
+        verify(mockSession).merge(samplePlayer);
         verify(mockTransaction).commit();
         verify(mockSession).close();
     }

@@ -15,13 +15,14 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles server-side communication and multiplayer game flow for TopCard.
  *
  * <p>
  * Author: Rajesh Rajchal
- * Date: 08/15/2025
+ * Date: 08/17/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
@@ -44,6 +45,8 @@ public class GameServer {
     private boolean gameStarted = false;
     private final ExecutorService clientThreadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
+    ServerSocket serverSocket;
+
     /**
      * Entry point for the server.
      * @param args Command line arguments.
@@ -61,7 +64,7 @@ public class GameServer {
      * @throws Exception if an error occurs while starting the server.
      */
     public void start() throws Exception {
-        ServerSocket serverSocket = new ServerSocket(PORT);
+        serverSocket = new ServerSocket(PORT);
         logger.info("TopCard Server started on port " + PORT);
         while (true) {
             try {
@@ -231,5 +234,31 @@ public class GameServer {
 
     public List<Player> getConnectedPlayers() {
         return connectedPlayers;
+    }
+
+    /**
+     * Stops the game server gracefully.
+     * Closes the server socket and shuts down the client thread pool.
+     * @throws IOException if an I/O error occurs while closing the socket.
+     * @throws InterruptedException if the current thread is interrupted while waiting for client threads to terminate.
+     */
+    public void stop() throws IOException, InterruptedException {
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            serverSocket.close();
+            logger.info("Game Server socket closed.");
+        }
+
+        clientThreadPool.shutdown();
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!clientThreadPool.awaitTermination(5, TimeUnit.SECONDS)) {
+                clientThreadPool.shutdownNow(); // Force shutdown if necessary
+                logger.warn("Game client thread pool did not terminate cleanly.");
+            }
+        } catch (InterruptedException e) {
+            clientThreadPool.shutdownNow();
+            Thread.currentThread().interrupt();
+            logger.error("Game client thread pool termination interrupted.", e);
+        }
     }
 }
