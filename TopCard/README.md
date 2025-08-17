@@ -23,7 +23,8 @@ This project transforms the original single-player TopCard game into a multiplay
 
 ## How to Launch the Game
 - Build the project: `mvn clean install`. It generates TopCard-1.0-SNAPSHOT-jar-with-dependencies.jar
-- Start the server service: `./run-server.sh` (or manually with this command. Before launching, make sure that the classpath ($CP) includes all required dependencies and compiled classes. Then run: `java -cp "$CP" com.topcard.network.game.GameServer
+- For offline game, simply run the TopCard-1.0-SNAPSHOT-jar-with-dependencies.jar. For offline game, run the servers as in the following steps. 
+- Start the server service: `./run-servers.sh` (or manually with this command. Before launching, make sure that the classpath ($CP) includes all required dependencies and compiled classes. Then run: `java -cp "$CP" com.topcard.network.game.GameServer
   `)
 - Start the client service: `./run-client_playgame.sh` (Alternatively, run them manually: 
   java -jar ./target/TopCard-1.0-SNAPSHOT-jar-with-dependencies.jar &`

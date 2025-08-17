@@ -19,12 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Handles server-side communication and multiplayer game flow for TopCard.
- *
- * <p>
- * Author: Rajesh Rajchal
- * Date: 08/17/2025
- * Subject: MSSE 672 Component-Based Software Development
- * </p>
  */
 public class GameServer {
 
@@ -34,22 +28,24 @@ public class GameServer {
     private static final int START_GAME_TIMEOUT_SECONDS = 5;
     private static final int MAX_PLAYERS = Constants.MAX_PLAYERS;
     private static final int THREAD_POOL_SIZE = 4;
-    private static final int FULL_LOBBY_CHECK_INTERVAL_MS = 100;
+    private static final int FULL_LOBBY_CHECK_INTERVAL_MS = 5000;
     private static final int TIMEOUT_CHECK_INTERVAL_MS = 500;
     private static final int BETS_ROUND_NUMBER = 1;
+    private static final int CLIENT_SOCKET_READ_TIMEOUT_MS = 5000;
 
     private final List<ObjectOutputStream> clientOutputs = new CopyOnWriteArrayList<>();
     private final List<Player> connectedPlayers = new CopyOnWriteArrayList<>();
     private final List<Socket> clientSockets = new CopyOnWriteArrayList<>();
 
-    private boolean gameStarted = false;
+    private volatile boolean gameStarted = false;
+    private volatile boolean running = false; // Controls the server's main accept loop for graceful shutdown
+
     private final ExecutorService clientThreadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
     ServerSocket serverSocket;
 
     /**
-     * Entry point for the server.
-     * @param args Command line arguments.
+     * Main entry point for the server.
      */
     public static void main(String[] args) {
         try {
@@ -65,19 +61,51 @@ public class GameServer {
      */
     public void start() throws Exception {
         serverSocket = new ServerSocket(PORT);
+        running = true;
         logger.info("TopCard Server started on port " + PORT);
-        while (true) {
+
+        while (running) { // Loop continues as long as server is running
+            Socket socket = null;
+            ObjectOutputStream out = null;
+            ObjectInputStream in = null;
+
             try {
                 if (connectedPlayers.size() < MAX_PLAYERS && !gameStarted) {
-                    Socket socket = serverSocket.accept();
-                    logger.info("New client connected from " + socket.getInetAddress());
+                    socket = serverSocket.accept();
+                    if (!running) { // Check flag immediately after accept in case stop() was called
+                        logger.info("Server stopping, closing newly accepted socket from " + socket.getInetAddress());
+                        socket.close();
+                        break;
+                    }
 
-                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                    logger.info("New client connected from " + socket.getInetAddress());
+                    socket.setSoTimeout(CLIENT_SOCKET_READ_TIMEOUT_MS);
+
+                    try {
+                        out = new ObjectOutputStream(socket.getOutputStream());
+                        in = new ObjectInputStream(socket.getInputStream());
+                    } catch (EOFException | SocketException e) {
+                        // Handles premature client disconnects or specific socket issues during stream setup
+                        String logMsg = "Stream setup exception for " + socket.getInetAddress() + ": " + e.getMessage();
+                        if (!running) logger.info("Cleanly handled " + logMsg + " (during shutdown)");
+                        else logger.debug("Transient " + logMsg + " (client disconnected early)");
+                        if (socket != null && !socket.isClosed()){
+                            try {
+                                socket.close();
+                            } catch (IOException ignored) {}
+                        }
+                        continue;
+                    }
 
                     GameMessage joinMessage = (GameMessage) in.readObject();
                     if ("JOIN".equals(joinMessage.getType())) {
                         Player player = (Player) joinMessage.getPayload();
+
+                        if (player == null || player.getUsername() == null || player.getUsername().trim().isEmpty()) {
+                            logger.warn("Client from " + socket.getInetAddress() + " sent invalid JOIN payload. Connection rejected.");
+                            in.close(); out.close(); socket.close();
+                            continue;
+                        }
 
                         if (!connectedPlayers.contains(player)) {
                             connectedPlayers.add(player);
@@ -86,33 +114,73 @@ public class GameServer {
 
                             logger.info("Player joined: " + player.getUsername() + ". Players in Lobby: " +  connectedPlayers.size() + " of " + MAX_PLAYERS);
                             sendAll(new GameMessage("Game Lobby - Number of Players:", connectedPlayers.size()));
-
                             clientThreadPool.submit(new GameServerHandler(this, socket, in, out));
                         } else {
                             logger.warn("Player " + player.getUsername() + " attempted to join twice. Connection rejected.");
                             in.close(); out.close(); socket.close();
                         }
+                    } else {
+                        logger.warn("Received unexpected message type: " + joinMessage.getType() + " during join phase from " + socket.getInetAddress() + ". Connection rejected by immediate close.");
+                        in.close(); out.close(); socket.close();
                     }
                 } else {
                     Thread.sleep(FULL_LOBBY_CHECK_INTERVAL_MS);
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                logger.error("Error accepting client or reading join message: " + e.getMessage());
+            } catch (SocketTimeoutException e) { // Catches timeouts on initial read
+                logger.warn("Client connection timed out during initial JOIN message from " + (socket != null ? socket.getInetAddress() : "unknown") + ": " + e.getMessage());
+                if (socket != null && !socket.isClosed()) try { socket.close(); } catch (IOException ignored) {}
+            } catch (SocketException se) { // Catches socket-specific errors, including Socket closed
+                if (!running && (se.getMessage() != null && se.getMessage().toLowerCase().contains("socket closed"))) {
+                    logger.info("Game Server socket closed, exiting accept loop cleanly.");
+                    break;
+                } else {
+                    logger.error("Socket error in accept loop: " + se.getMessage(), se);
+                }
+            } catch (IOException | ClassNotFoundException e) { // Catches other I/O errors and deserialization issues
+                logger.error("Error accepting client or reading join message: " + e.getMessage(), e);
+                if (socket != null && !socket.isClosed()) try { socket.close(); } catch (IOException ignored) {}
             }
         }
     }
 
     /**
+     * Stops the game server gracefully.
+     * @throws IOException if an I/O error occurs while closing the socket.
+     * @throws InterruptedException if the current thread is interrupted while waiting for client threads to terminate.
+     */
+    public void stop() throws IOException, InterruptedException {
+        running = false; // Signal main loop to terminate
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            serverSocket.close(); // Interrupts blocking accept() call
+            logger.info("Game Server socket closed.");
+        }
+        for (Socket clientSocket : clientSockets) { // Close all connected client sockets
+            try { if (!clientSocket.isClosed()) clientSocket.close(); } catch (IOException ignored) {}
+        }
+        clientOutputs.clear(); connectedPlayers.clear(); clientSockets.clear();
+
+        clientThreadPool.shutdown(); // Shutdown client handling threads
+        try {
+            if (!clientThreadPool.awaitTermination(5, TimeUnit.SECONDS)) {
+                clientThreadPool.shutdownNow(); // Force shutdown if not terminated
+                logger.warn("Game client thread pool did not terminate cleanly.");
+            }
+        } catch (InterruptedException e) {
+            clientThreadPool.shutdownNow();
+            Thread.currentThread().interrupt();
+            logger.error("Game client thread pool termination interrupted.", e);
+        }
+    }
+
+    /**
      * Handles incoming game messages from clients.
-     * @param message The received game message.
-     * @param player The player who sent the message.
      */
     public synchronized void handleMessage(GameMessage message, Player player) {
         logger.debug("Server received message from " + player.getUsername() + ": " + message.getType());
 
         if ("START_GAME".equals(message.getType()) || "REMATCH".equals(message.getType())) {
             if (!gameStarted) {
-                new Thread(() -> {
+                new Thread(() -> { // Starts a new thread for game launch countdown
                     long startTime = System.currentTimeMillis();
                     logger.info("START_GAME received. Countdown to launch begins...");
 
@@ -127,7 +195,6 @@ public class GameServer {
                             Thread.currentThread().interrupt();
                         }
                     }
-
                     if (!gameStarted) {
                         logger.info("Countdown complete. Starting game now.");
                         fillMissingPlayersIfNeeded();
@@ -161,21 +228,21 @@ public class GameServer {
 
     /**
      * Broadcasts a message to all connected clients.
-     * @param message The message to broadcast.
      */
     public synchronized void sendAll(GameMessage message) {
-        for (ObjectOutputStream out : clientOutputs) {
+        List<ObjectOutputStream> outputsToSend = new ArrayList<>(clientOutputs);
+        for (ObjectOutputStream out : outputsToSend) {
             try {
                 out.writeObject(message);
                 out.flush();
             } catch (IOException e) {
-                logger.error("Failed to send message to client. " + e.getMessage());
+                logger.error("Failed to send message to client: " + e.getMessage());
             }
         }
     }
 
     /**
-     * Fills the game with additional players if the lobby is not full.
+     * Fills the game with additional bot players if the lobby is not full.
      */
     private void fillMissingPlayersIfNeeded() {
         int missing = MAX_PLAYERS - connectedPlayers.size();
@@ -183,24 +250,22 @@ public class GameServer {
 
         PlayerManager playerManager = new PlayerManager();
         List<Player> allPlayers = playerManager.getAllPlayers();
-        allPlayers.removeIf(p -> connectedPlayers.stream()
-                .anyMatch(cp -> cp.getUsername().equals(p.getUsername())));
+        // Remove already connected players from potential bots list
+        allPlayers.removeIf(p -> connectedPlayers.stream().anyMatch(cp -> cp.getUsername().equals(p.getUsername())));
 
-        Collections.shuffle(allPlayers);
+        Collections.shuffle(allPlayers); // Randomize bot selection
 
         for (int i = 0; i < missing; i++) {
             Player tempPlayer;
             if (i < allPlayers.size()) {
                 tempPlayer = allPlayers.get(i);
             } else {
+                // Create new bot if no existing player is available
                 String baseUsername = "Bot" + (i + 1);
                 String tempUsername = baseUsername;
                 int suffix = 1;
-                while (playerManager.getPlayerByUsername(tempUsername) != null) {
-                    tempUsername = baseUsername + "_" + suffix++;
-                }
-                LocalDate dob = LocalDate.of(1900, 1, 1);
-                tempPlayer = new Player(tempUsername, "pass" + (i + 1), baseUsername, "Bot", dob);
+                while (playerManager.getPlayerByUsername(tempUsername) != null) tempUsername = baseUsername + "_" + suffix++;
+                tempPlayer = new Player(tempUsername, "pass" + (i + 1), baseUsername, "Bot", LocalDate.of(1900, 1, 1));
                 playerManager.addPlayer(tempPlayer);
                 logger.warn("Created temporary player: " + tempPlayer.getUsername());
             }
@@ -211,9 +276,6 @@ public class GameServer {
 
     /**
      * Handles the disconnection of a client.
-     * @param socket The client's socket.
-     * @param in The client's input stream.
-     * @param out The client's output stream.
      */
     public void removeClient(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         int index = clientSockets.indexOf(socket);
@@ -223,7 +285,7 @@ public class GameServer {
             clientOutputs.remove(index);
             clientSockets.remove(index);
         }
-        try {
+        try { // Close client resources
             if (in != null) in.close();
             if (out != null) out.close();
             if (socket != null) socket.close();
@@ -234,31 +296,5 @@ public class GameServer {
 
     public List<Player> getConnectedPlayers() {
         return connectedPlayers;
-    }
-
-    /**
-     * Stops the game server gracefully.
-     * Closes the server socket and shuts down the client thread pool.
-     * @throws IOException if an I/O error occurs while closing the socket.
-     * @throws InterruptedException if the current thread is interrupted while waiting for client threads to terminate.
-     */
-    public void stop() throws IOException, InterruptedException {
-        if (serverSocket != null && !serverSocket.isClosed()) {
-            serverSocket.close();
-            logger.info("Game Server socket closed.");
-        }
-
-        clientThreadPool.shutdown();
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!clientThreadPool.awaitTermination(5, TimeUnit.SECONDS)) {
-                clientThreadPool.shutdownNow(); // Force shutdown if necessary
-                logger.warn("Game client thread pool did not terminate cleanly.");
-            }
-        } catch (InterruptedException e) {
-            clientThreadPool.shutdownNow();
-            Thread.currentThread().interrupt();
-            logger.error("Game client thread pool termination interrupted.", e);
-        }
     }
 }
