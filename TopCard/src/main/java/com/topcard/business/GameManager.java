@@ -5,6 +5,7 @@ import com.topcard.domain.Player;
 import com.topcard.service.factory.ServiceFactory;
 import com.topcard.service.game.GameService;
 import com.topcard.service.game.IGameService;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -19,15 +20,10 @@ import java.util.List;
  * </p>
  */
 public class GameManager {
-    private final IGameService gameService;
+    private IGameService gameService;
 
-    /**
-     * Constructs a new GameManager and initializes the game service with the provided players.
-     *
-     * @param players the list of players participating in the game
-     */
-    public GameManager(List<Player> players) {
-        this.gameService = ServiceFactory.createService(GameService.class, players);
+    public GameManager(IGameService gameService) {
+        this.gameService = gameService;
     }
 
     /**
@@ -112,5 +108,9 @@ public class GameManager {
      */
     public void displayWinners(List<Player> winners) {
         gameService.displayWinners(winners);
+    }
+
+    public void setPlayers(List<Player> players) {
+         this.gameService = ServiceFactory.createService(GameService.class, players);
     }
 }

@@ -5,9 +5,14 @@ import com.topcard.business.PlayerManager;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
+import com.topcard.service.game.GameService;
+import com.topcard.service.game.IGameService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.*;
@@ -21,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Handles server-side communication and multiplayer game flow for TopCard.
  */
+@Component
 public class GameServer {
 
     private static final Logger logger = LogManager.getLogger(GameServer.class);
@@ -48,12 +54,17 @@ public class GameServer {
     @Autowired
     PlayerManager playerManager;
 
+    @Autowired
+    private ApplicationContext context;
+
     /**
      * Main entry point for the server.
      */
     public static void main(String[] args) {
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.topcard");
+        GameServer server = applicationContext.getBean(GameServer.class);
         try {
-            new GameServer().start();
+            server.start();
         } catch (Exception e) {
             logger.error("Error with Game Server", e);
         }
@@ -214,17 +225,20 @@ public class GameServer {
      * Runs a full game round for connected players.
      */
     private synchronized void beginGame() {
-        GameManager manager = new GameManager(connectedPlayers);
-        manager.startGame();
-        manager.dealCards();
+        IGameService newGameService = context.getBean(IGameService.class);
+        newGameService.setPlayers(connectedPlayers);
+        GameManager gameManager = new GameManager(newGameService);
 
-        List<Card[]> hands = manager.getHands();
+        gameManager.startGame();
+        gameManager.dealCards();
+
+        List<Card[]> hands = gameManager.getHands();
         sendAll(new GameMessage("HANDS", hands));
 
-        List<Player> updatedPlayers = manager.executeBettingRound(BETS_ROUND_NUMBER);
+        List<Player> updatedPlayers = gameManager.executeBettingRound(BETS_ROUND_NUMBER);
         sendAll(new GameMessage("POINTS_UPDATED", updatedPlayers));
 
-        List<Player> winners = manager.determineWinner();
+        List<Player> winners = gameManager.determineWinner();
         sendAll(new GameMessage("WINNERS", winners));
 
         logger.info("Game round completed and updates sent to clients.");

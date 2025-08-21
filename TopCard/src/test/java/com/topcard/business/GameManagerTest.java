@@ -19,7 +19,7 @@ public class GameManagerTest {
     @Before
     public void setUp() {
         players = generatePlayers();
-        gameManager = new GameManager(players);
+        gameManager.setPlayers(players);
         gameManager.startGame();
     }
 

@@ -45,6 +45,8 @@ public class LoginController extends JFrame {
     private LoginView loginView;
     private JDesktopPane desktopPane;
     private PlayerManager playerManager;  // Injected by Spring
+
+    @Autowired
     private ApplicationContext context;
 
 //    /**

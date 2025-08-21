@@ -95,4 +95,6 @@ public interface IGameService {
      * @return current players in the game
      */
     List<Player> getPlayers();
+
+    void setPlayers(List<Player> players);
 }

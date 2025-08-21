@@ -10,6 +10,9 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,6 +23,7 @@ import java.util.Optional;
  * Handles client-side communication with the TopCard server.
  * Manages game messages, server events, and GUI launching.
  */
+@Component
 public class GameClient {
 
     private static final Logger logger = LogManager.getLogger(GameClient.class);
@@ -28,6 +32,9 @@ public class GameClient {
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
+
+    @Autowired
+    private ApplicationContext context;
 
     private GameClient() {}
 
@@ -116,7 +123,7 @@ public class GameClient {
         Platform.runLater(() -> {
             logger.info("Launching GameView...");
             try {
-                GameView view = new GameView(players);
+                GameView view = new GameView(players, context);
                 Stage stage = new Stage();
                 view.start(stage);
             } catch (Exception ex) {

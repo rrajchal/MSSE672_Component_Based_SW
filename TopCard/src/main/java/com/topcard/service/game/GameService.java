@@ -5,24 +5,30 @@ import com.topcard.domain.Game;
 import com.topcard.domain.Player;
 import com.topcard.service.player.IPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Scope("prototype")
 public class GameService implements IGameService {
 
-    private final Game game;
+    private Game game;
     private final IPlayerService playerService;
-    private final List<Player> players;
+    private List<Player> players;
 
     @Autowired
-    public GameService(IPlayerService playerService, List<Player> players) {
+    public GameService(IPlayerService playerService) {
         this.playerService = playerService;
+    }
+
+    public void setPlayers(List<Player> players) {
         this.players = players;
         List<Player> updatedPlayers = updateExistingPlayers(players);
         this.game = new Game(updatedPlayers);
     }
+
 
     @Override
     public void startGame() {

@@ -3,6 +3,7 @@ package com.topcard.presentation.controller;
 import com.topcard.business.GameManager;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
+import com.topcard.service.game.IGameService;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -13,6 +14,9 @@ import javafx.scene.media.AudioClip;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class GameController {
 
     private static final Logger logger = LogManager.getLogger(GameController.class);
@@ -58,6 +63,7 @@ public class GameController {
 
     private int betAmount = 0;
     private List<Player> players;
+
     private GameManager gameManager;
     private ImageView[][] playerCards;
 
@@ -65,6 +71,9 @@ public class GameController {
     private AudioClip cardDealSound;
 
     private final int CARD_DISTRIBUTE_DELAY = 100;
+
+    @Autowired
+    private ApplicationContext context;
 
     /**
      * Initializes the controller. This method is automatically called after the FXML has been loaded.
@@ -125,10 +134,13 @@ public class GameController {
     private void startButtonPressed() {
         logger.info("Start Game button pressed");
         // Initialize GameManager with the players
-        gameManager = new GameManager(players);
         boolean valid = checkForBetAmount();
         if (valid) {
             // Start the game and deal cards
+            IGameService gameService = context.getBean(IGameService.class);
+            gameService.setPlayers(players);
+            gameManager = new GameManager(gameService);
+
             gameManager.startGame();
             displayCardsSequentially();
         }

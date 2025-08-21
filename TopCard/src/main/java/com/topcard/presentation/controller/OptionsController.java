@@ -111,7 +111,7 @@ public class OptionsController {
 
         Platform.runLater(() -> {
             try {
-                GameView gameView = new GameView(players);
+                GameView gameView = new GameView(players, context);
                 Stage stage = new Stage();
                 gameView.start(stage);
             } catch (Exception e) {

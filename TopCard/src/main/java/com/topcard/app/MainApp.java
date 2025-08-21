@@ -47,6 +47,7 @@ public class MainApp {
         context.refresh();
         // Creates Desktop Pane and Menus
         createDesktopPaneAndMenu();
+        openLogin();
     }
 
     /**

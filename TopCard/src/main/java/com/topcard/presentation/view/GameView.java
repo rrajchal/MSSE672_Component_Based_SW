@@ -10,6 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,13 +31,16 @@ public class GameView {
 
     private final List<Player> players;
 
+    private final ApplicationContext context;
+
     /**
      * Constructs a new GameView with the specified list of players.
      *
      * @param players the list of players participating in the game
      */
-    public GameView(List<Player> players) {
+    public GameView(List<Player> players, ApplicationContext context) {
         this.players = players;
+        this.context = context;
     }
 
     /**
@@ -54,6 +58,8 @@ public class GameView {
 
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlPath), "FXML resource not found"));
+            loader.setControllerFactory(context::getBean); // Tell FXMLLoader to get controller from Spring
+
             Parent root = loader.load();
 
             // Pass the players to the controller

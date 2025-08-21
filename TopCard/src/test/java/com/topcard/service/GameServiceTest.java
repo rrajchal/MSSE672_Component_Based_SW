@@ -39,7 +39,8 @@ public class GameServiceTest {
         player2 = new Player("username2", "password", "firstName2", "lastName2", LocalDate.of(2000, 2, 1));
         player3 = new Player("username3", "password", "firstName3", "lastName3", LocalDate.of(2000, 3, 1));
         initialPlayers = Arrays.asList(player1, player2, player3);
-        gameService = new GameService(playerService, initialPlayers);
+        gameService = new GameService(playerService);
+        gameService.setPlayers(initialPlayers);
     }
 
     @Test
