@@ -1,5 +1,7 @@
 package com.topcard.presentation.view;
 
+import org.springframework.stereotype.Component;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -21,6 +23,7 @@ import java.awt.Insets;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class UpdateView extends JFrame {
 
     private JLabel searchLabel;
@@ -43,11 +46,14 @@ public class UpdateView extends JFrame {
      * Constructor to initialize the update view.
      */
     public UpdateView() {
+        initComponents();
+    }
+
+    public void initializeWindow() {
         setTitle("Update Player");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        initComponents();
     }
 
     /**

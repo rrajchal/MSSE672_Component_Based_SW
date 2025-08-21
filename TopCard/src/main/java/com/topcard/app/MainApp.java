@@ -7,6 +7,7 @@ import com.topcard.presentation.view.LoginView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -31,6 +32,8 @@ public class MainApp {
 
     private static final JDesktopPane desktopPane = new JDesktopPane(); // Main desktop pane
 
+    private static AnnotationConfigApplicationContext context;   // Spring Context
+
     /**
      * The main method serves as the entry point of the application.
      * It initializes the login frame and sets the debug mode based on the configuration.
@@ -38,6 +41,10 @@ public class MainApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Initialize Spring Context
+        context = new AnnotationConfigApplicationContext();
+        context.scan("com.topcard");
+        context.refresh();
         // Creates Desktop Pane and Menus
         createDesktopPaneAndMenu();
     }
@@ -102,10 +109,11 @@ public class MainApp {
 
         aboutGameMenuItem.addActionListener(e -> showAboutGame());
 
-        // Initialize and add the login view as an internal frame
-        LoginView loginView = new LoginView();
-        new LoginController(loginView, desktopPane);
-        InternalFrame.addInternalFrame(desktopPane, "Login", loginView.getLoginPanel(), 400, 300, false);
+        // Use Spring-managed LoginController
+        LoginView loginView =context.getBean(LoginView.class);
+        LoginController loginController = context.getBean(LoginController.class);
+        loginController.setLoginView(loginView); // Inject manually
+        loginController.setDesktopPane(desktopPane); // Inject manually
     }
 
     /**
@@ -125,9 +133,11 @@ public class MainApp {
             }
         }
 
-        // Initialize and add the login view as an internal frame
-        LoginView loginView = new LoginView();
-        new LoginController(loginView, desktopPane);
+        LoginView loginView = context.getBean(LoginView.class);
+        loginView.initializeWindow();
+        LoginController loginController = context.getBean(LoginController.class);
+        loginController.setLoginView(loginView);
+        loginController.setDesktopPane(desktopPane);
         InternalFrame.addInternalFrame(desktopPane, "Login", loginView.getLoginPanel(), 400, 300, false);
     }
 

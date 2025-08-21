@@ -1,7 +1,8 @@
 package com.topcard.presentation.view;
 
+import org.springframework.stereotype.Component;
+
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.*;
 
@@ -15,6 +16,7 @@ import java.awt.*;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class OptionsView extends JPanel {
 
     // Panel for organizing the options components

@@ -1,9 +1,12 @@
 package com.topcard.business;
 
 import com.topcard.domain.Player;
-import com.topcard.service.factory.ServiceFactory;
 import com.topcard.service.player.IPlayerService;
 import com.topcard.service.player.PlayerService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,14 +20,19 @@ import java.util.List;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class PlayerManager {
+
+    private static final Logger logger = LogManager.getLogger(PlayerManager.class);
     private final IPlayerService playerService;
 
     /**
      * Constructs a new PlayerManager and initializes the player service.
      */
-    public PlayerManager() {
-        this.playerService = ServiceFactory.createService(PlayerService.class);
+    @Autowired
+    public PlayerManager(IPlayerService playerService) {
+        //this.playerService = ServiceFactory.createService(PlayerService.class);
+        this.playerService = playerService;
     }
 
     /**

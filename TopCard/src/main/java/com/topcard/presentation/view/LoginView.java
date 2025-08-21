@@ -1,5 +1,7 @@
 package com.topcard.presentation.view;
 
+import org.springframework.stereotype.Component;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ import java.awt.Color;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class LoginView {
 
     private JPanel loginPanel;
@@ -35,13 +38,13 @@ public class LoginView {
      * Constructor to initialize the login view.
      */
     public LoginView() {
-        initComponents();
+        initializeWindow();
     }
 
     /**
      * Initializes the components of the login panel and sets up the layout.
      */
-    private void initComponents() {
+    public void initializeWindow() {
         loginPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);

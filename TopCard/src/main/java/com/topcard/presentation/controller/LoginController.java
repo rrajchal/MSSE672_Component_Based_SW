@@ -12,6 +12,9 @@ import com.topcard.presentation.view.OptionsView;
 import com.topcard.presentation.view.SignUpView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -34,23 +37,28 @@ import javax.swing.*;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class LoginController extends JFrame {
 
     private static final Logger logger = LogManager.getLogger(LoginController.class);
 
-    private final LoginView loginView;
-    private final JDesktopPane desktopPane;
-    /**
-     * Constructor to initialize the login controller with the given login view.
-     *
-     * @param loginView the login view
-     */
-    public LoginController(LoginView loginView, JDesktopPane desktopPane) {
-        this.loginView = loginView;
-        this.desktopPane = desktopPane;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        initController();
-    }
+    private LoginView loginView;
+    private JDesktopPane desktopPane;
+    private PlayerManager playerManager;  // Injected by Spring
+    private ApplicationContext context;
+
+//    /**
+//     * Constructor to initialize the login controller with the given login view.
+//     *
+//     * @param loginView the login view
+//     */
+//    public LoginController(LoginView loginView, JDesktopPane desktopPane, PlayerManager playerManager) {
+//        this.loginView = loginView;
+//        this.desktopPane = desktopPane;
+//        this.playerManager = playerManager;
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        initController();
+//    }
 
     /**
      * Initializes the controller by setting up the action listeners.
@@ -82,7 +90,6 @@ public class LoginController extends JFrame {
                 validateInputs(loginView.getPasswordField(), password, Constants.PASSWORD_CANNOT_HAVE_SPACES) &&
                 authenticate(username, password)) {
 
-            PlayerManager playerManager = new PlayerManager();
             Player loggedInPlayer = playerManager.getPlayerByUsername(username);
 
             // Attempt to connect to the server first
@@ -139,8 +146,11 @@ public class LoginController extends JFrame {
         if (loginFrame != null) {
             loginFrame.dispose();
         }
-        OptionsView optionsView = new OptionsView();
-        new OptionsController(optionsView, username, isOnline, desktopPane);
+
+        OptionsView optionsView = context.getBean(OptionsView.class);
+        OptionsController optionsController = context.getBean(OptionsController.class);
+        optionsController.initialize(optionsView, username, isOnline, desktopPane);
+
         InternalFrame.addInternalFrame(desktopPane, "Choose an Option", optionsView.getOptionsPanel(), 400, 200, false);
     }
 
@@ -201,7 +211,6 @@ public class LoginController extends JFrame {
      * @return true if the username and password are valid, false otherwise
      */
     private boolean authenticate(String username, String password) {
-        PlayerManager playerManager = new PlayerManager();
         Player player = playerManager.getPlayerByUsername(username);
         return username != null && !username.isEmpty() &&
                 password != null && !password.isEmpty() &&
@@ -214,8 +223,26 @@ public class LoginController extends JFrame {
      * It opens the SignUpView and disables the Login frame.
      */
     private void handleSignUp() {
-        SignUpView signUpView = new SignUpView((JFrame) loginView.getLoginPanel().getTopLevelAncestor());
-        new SignUpController(signUpView, (JFrame) loginView.getLoginPanel().getTopLevelAncestor());
+        SignUpView signUpView = context.getBean(SignUpView.class);
+        signUpView.setParentFrame((JFrame) loginView.getLoginPanel().getTopLevelAncestor());
+
+        SignUpController signUpController = context.getBean(SignUpController.class);
+        signUpController.initialize(signUpView, (JFrame) loginView.getLoginPanel().getTopLevelAncestor());
+
         signUpView.show();
+    }
+
+    public void setLoginView(LoginView loginView) {
+        this.loginView = loginView;
+        initController();
+    }
+
+    public void setDesktopPane(JDesktopPane desktopPane) {
+        this.desktopPane = desktopPane;
+    }
+
+    @Autowired
+    public void setPlayerManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
     }
 }

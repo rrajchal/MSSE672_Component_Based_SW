@@ -11,6 +11,8 @@ import com.topcard.xml.sax.PlayerSaxHandler;
 import com.topcard.xml.sax.SaxParserUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -34,21 +36,26 @@ import javax.xml.parsers.SAXParserFactory;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class AddPlayerController {
 
     private static final Logger logger = LogManager.getLogger(AddPlayerController.class);
 
-    private final AddPlayerView addPlayerView;
-    private final PlayerManager playerManager;
+    private AddPlayerView addPlayerView;
+    private PlayerManager playerManager;
 
     /**
      * Constructor to initialize the add player controller with the given add player view.
      *
      * @param addPlayerView the add player view
      */
-    public AddPlayerController(AddPlayerView addPlayerView) {
+//    public AddPlayerController(AddPlayerView addPlayerView, PlayerManager playerManager) {
+//        this.addPlayerView = addPlayerView;
+//        this.playerManager = playerManager;
+//        initController();
+//    }
+    public void initialize(AddPlayerView addPlayerView) {
         this.addPlayerView = addPlayerView;
-        this.playerManager = new PlayerManager();
         initController();
     }
 
@@ -237,5 +244,10 @@ public class AddPlayerController {
         } else {
             logger.info("XML file download cancelled by user.");
         }
+    }
+
+    @Autowired
+    public void setPlayerManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
     }
 }

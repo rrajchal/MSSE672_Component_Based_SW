@@ -7,6 +7,7 @@ import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.net.*;
@@ -43,6 +44,9 @@ public class GameServer {
     private final ExecutorService clientThreadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
     ServerSocket serverSocket;
+
+    @Autowired
+    PlayerManager playerManager;
 
     /**
      * Main entry point for the server.
@@ -248,7 +252,6 @@ public class GameServer {
         int missing = MAX_PLAYERS - connectedPlayers.size();
         if (missing <= 0) return;
 
-        PlayerManager playerManager = new PlayerManager();
         List<Player> allPlayers = playerManager.getAllPlayers();
         // Remove already connected players from potential bots list
         allPlayers.removeIf(p -> connectedPlayers.stream().anyMatch(cp -> cp.getUsername().equals(p.getUsername())));

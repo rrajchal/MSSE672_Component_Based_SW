@@ -1,6 +1,7 @@
 package com.topcard.presentation.view;
 
 import com.topcard.presentation.common.Constants;
+import org.springframework.stereotype.Component;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,6 +9,7 @@ import java.awt.Insets;
 
 import javax.swing.*;
 
+@Component
 public class AddPlayerView extends JFrame {
     private JTextField firstNameField;
     private JTextField lastNameField;
@@ -22,11 +24,14 @@ public class AddPlayerView extends JFrame {
     private JButton downloadXmlButton;  // Button for downloading XML
 
     public AddPlayerView() {
-        setTitle("Add Player");
-        setSize(400, 450);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the frame on the monitor
         initComponents();
+    }
+
+    public void initializeWindow() {
+        setTitle("Add Player");
+        setSize(500, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void initComponents() {

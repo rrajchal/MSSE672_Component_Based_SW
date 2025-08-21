@@ -7,6 +7,7 @@ import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.UpdateView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.awt.Color;
 import java.time.LocalDate;
@@ -24,28 +25,36 @@ import javax.swing.*;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class UpdateController {
 
     private static final Logger logger = LogManager.getLogger(UpdateController.class);
 
-    private final UpdateView updateView;
-    private final PlayerManager playerManager;
-    private final boolean isAdmin;
-    private final String username;
-    private final JDesktopPane desktopPane;
+    private UpdateView updateView;
+    private PlayerManager playerManager;
+    private boolean isAdmin;
+    private String username;
+    private JDesktopPane desktopPane;
 
-    /**
-     * Constructor to initialize the update controller with the given update view and admin status.
-     *
-     * @param updateView the update view
-     * @param isAdmin whether the user is an admin
-     */
-    public UpdateController(UpdateView updateView, String username, boolean isAdmin, JDesktopPane desktopPane) {
+//    /**
+//     * Constructor to initialize the update controller with the given update view and admin status.
+//     *
+//     * @param updateView the update view
+//     * @param isAdmin whether the user is an admin
+//     */
+//    public UpdateController(UpdateView updateView, String username, boolean isAdmin, JDesktopPane desktopPane) {
+//        this.updateView = updateView;
+//        this.username = username;
+//        this.desktopPane = desktopPane;
+//        this.isAdmin = isAdmin;
+//        initController();
+//    }
+
+    public void initialize(UpdateView updateView, String username, boolean isAdmin, JDesktopPane desktopPane) {
         this.updateView = updateView;
         this.username = username;
-        this.desktopPane = desktopPane;
-        this.playerManager = new PlayerManager();
         this.isAdmin = isAdmin;
+        this.desktopPane = desktopPane;
         initController();
     }
 
@@ -73,7 +82,6 @@ public class UpdateController {
      * Populate user information in the options view
      */
     private void populateUserInfo(String username) {
-        PlayerManager playerManager = new PlayerManager();
         Player player = playerManager.getPlayerByUsername(username);
         if (player != null) {
             updateView.getIdField().setText(String.valueOf(player.getPlayerId()));

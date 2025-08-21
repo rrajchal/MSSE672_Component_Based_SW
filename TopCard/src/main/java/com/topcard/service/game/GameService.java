@@ -3,18 +3,22 @@ package com.topcard.service.game;
 import com.topcard.domain.Card;
 import com.topcard.domain.Game;
 import com.topcard.domain.Player;
-import com.topcard.service.player.PlayerService;
+import com.topcard.service.player.IPlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class GameService implements IGameService {
 
     private final Game game;
-    private final PlayerService playerService;
+    private final IPlayerService playerService;
     private final List<Player> players;
 
-    public GameService(List<Player> players) {
-        this.playerService = new PlayerService();
+    @Autowired
+    public GameService(IPlayerService playerService, List<Player> players) {
+        this.playerService = playerService;
         this.players = players;
         List<Player> updatedPlayers = updateExistingPlayers(players);
         this.game = new Game(updatedPlayers);

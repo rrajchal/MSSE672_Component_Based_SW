@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,6 +46,13 @@ public class AuthenticationServerTest {
 
     @BeforeAll
     void setUpAll() throws Exception {
+        AnnotationConfigApplicationContext context =
+                new org.springframework.context.annotation.AnnotationConfigApplicationContext();
+        context.scan("com.topcard");
+        context.refresh();
+
+        authenticationServer = new AuthenticationServer();
+
         // copied code from other test class.
         testPlayers = List.of(
                 new Player("mickey", "password", "Mickey", "Mouse", LocalDate.of(1990, 1, 1)),
@@ -54,10 +63,9 @@ public class AuthenticationServerTest {
 
         mockPlayerManager = Mockito.mock(PlayerManager.class);
 
-        configureMockPlayerManager();
+        authenticationServer.setAuthPort(TEST_AUTH_PORT);
 
-        // Create the server with the test port directly
-        authenticationServer = new AuthenticationServer(TEST_AUTH_PORT);
+        configureMockPlayerManager();
 
         // Inject the mock into the AuthenticationServer instance
         Field playerManagerField = AuthenticationServer.class.getDeclaredField("playerManager");

@@ -14,6 +14,9 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,27 +37,40 @@ import java.util.List;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class OptionsController {
 
     private static final Logger logger = LogManager.getLogger(OptionsController.class);
 
-    private final OptionsView optionsView;
-    private final JDesktopPane desktopPane;
-    private final boolean isOnline; // boolean flag to track online status
+    private OptionsView optionsView;
+    private JDesktopPane desktopPane;
+    private boolean isOnline; // boolean flag to track online status
+
+    private PlayerManager playerManager;
+    private ApplicationContext context;
 
     private Player player = null;
 
-    /**
-     * Constructor to initialize the OptionsController.
-     *
-     * @param optionsView The view associated with this controller.
-     * @param username The username of the logged-in player.
-     * @param isOnline A flag indicating whether the application is running in online mode.
-     * @param desktopPane The desktop pane for managing internal frames.
-     */
-    public OptionsController(OptionsView optionsView, String username, boolean isOnline, JDesktopPane desktopPane) {
+//    /**
+//     * Constructor to initialize the OptionsController.
+//     *
+//     * @param optionsView The view associated with this controller.
+//     * @param username The username of the logged-in player.
+//     * @param isOnline A flag indicating whether the application is running in online mode.
+//     * @param desktopPane The desktop pane for managing internal frames.
+//     */
+//    @Autowired
+//    public OptionsController(OptionsView optionsView, String username, boolean isOnline, JDesktopPane desktopPane, PlayerManager playerManager) {
+//        this.optionsView = optionsView;
+//        this.isOnline = isOnline; // Store the online status
+//        this.desktopPane = desktopPane;
+//        this.playerManager = playerManager;
+//        initController(username);
+//    }
+
+    public void initialize(OptionsView optionsView, String username, boolean isOnline, JDesktopPane desktopPane) {
         this.optionsView = optionsView;
-        this.isOnline = isOnline; // Store the online status
+        this.isOnline = isOnline;
         this.desktopPane = desktopPane;
         initController(username);
     }
@@ -68,7 +84,7 @@ public class OptionsController {
      */
     private void initController(String username) {
         logger.info("Initializing Option Controller");
-        PlayerManager playerManager = new PlayerManager();
+
         player = playerManager.getPlayerByUsername(username);
 
         optionsView.setAddPlayerButtonVisibility(player != null && player.isAdmin());
@@ -122,7 +138,6 @@ public class OptionsController {
      * @return the list of four players (including the authenticated user)
      */
     private List<Player> getThreeRandomOpponentPlayers() {
-        PlayerManager playerManager = new PlayerManager();
         List<Player> allPlayers = playerManager.getAllPlayers();
         allPlayers.removeIf(p -> p.getUsername().equals(player.getUsername())); // remove the logged-in player from allPlayers
         List<Player> selectedPlayers = new ArrayList<>();
@@ -161,9 +176,13 @@ public class OptionsController {
      * @param username the username of the authenticated player
      */
     private void handleUpdate(String username) {
-        UpdateView updateView = new UpdateView();
+        UpdateView updateView = context.getBean(UpdateView.class);
+        updateView.initializeWindow();
         boolean isAdmin = player.isAdmin();
-        new UpdateController(updateView, username, isAdmin, desktopPane);
+
+        UpdateController updateController = context.getBean(UpdateController.class);
+        updateController.initialize(updateView, username, isAdmin, desktopPane);
+
         InternalFrame.addInternalFrame(desktopPane, "Update", updateView.getUpdatePanel(), 700, 400, true);
         attachWindowListener(updateView);
     }
@@ -174,8 +193,10 @@ public class OptionsController {
      */
     private void handleAddPlayer() {
         disableOptionsView();
-        AddPlayerView addPlayerView = new AddPlayerView();
-        new AddPlayerController(addPlayerView);
+        AddPlayerView addPlayerView = context.getBean(AddPlayerView.class);
+        addPlayerView.initializeWindow();
+        AddPlayerController addPlayerController = context.getBean(AddPlayerController.class);
+        addPlayerController.initialize(addPlayerView);
         attachWindowListener(addPlayerView);
         addPlayerView.setVisible(true);
     }
@@ -221,5 +242,15 @@ public class OptionsController {
         if (window != null) {
             window.setOpacity(opacity);
         }
+    }
+
+    @Autowired
+    public void setPlayerManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
+
+    @Autowired
+    public void setApplicationContext(ApplicationContext context) {
+        this.context = context;
     }
 }

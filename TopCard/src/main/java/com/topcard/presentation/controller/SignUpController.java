@@ -7,6 +7,7 @@ import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.SignUpView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -26,22 +27,31 @@ import javax.swing.JOptionPane;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class SignUpController {
 
     private static final Logger logger = LogManager.getLogger(SignUpController.class);
 
-    private final SignUpView signUpView;
-    private final JFrame loginFrame;
+    private SignUpView signUpView;
+    private JFrame loginFrame;
 
-    /**
-     * Constructor to initialize the sign-up controller with the given sign-up view and login frame.
-     *
-     * @param signUpView the sign-up view
-     * @param loginFrame the login frame
-     */
-    public SignUpController(SignUpView signUpView, JFrame loginFrame) {
+    PlayerManager playerManager;
+
+//    /**
+//     * Constructor to initialize the sign-up controller with the given sign-up view and login frame.
+//     *
+//     * @param signUpView the sign-up view
+//     * @param loginFrame the login frame
+//     */
+//    public SignUpController(SignUpView signUpView, JFrame loginFrame) {
+//        this.signUpView = signUpView;
+//        this.loginFrame = loginFrame;
+//        initController();
+//    }
+
+    public void initialize(SignUpView signUpView, JFrame parentFrame) {
         this.signUpView = signUpView;
-        this.loginFrame = loginFrame;
+        this.loginFrame = parentFrame;
         initController();
     }
 
@@ -104,7 +114,6 @@ public class SignUpController {
             }
 
             // Add player
-            PlayerManager playerManager = new PlayerManager();
             Player newPlayer = new Player(
                     signUpView.getUsernameField().getText(),
                     password,

@@ -2,7 +2,10 @@ package com.topcard.service.factory;
 
 import com.topcard.exceptions.TopCardException;
 import com.topcard.marker.TopCardMarker;
+import com.topcard.presentation.controller.AddPlayerController;
 import com.topcard.xml.sax.SaxParserUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -16,6 +19,7 @@ import java.util.Map;
  */
 public class ServiceFactory implements TopCardMarker {
 
+    private static final Logger logger = LogManager.getLogger(ServiceFactory.class);
     private static final Map<Class<?>, Object> serviceInstances = new HashMap<>();
     private static final Map<Class<?>, Class<?>> serviceMappings = new HashMap<>();
 
@@ -66,6 +70,7 @@ public class ServiceFactory implements TopCardMarker {
             }
 
             serviceInstances.put(requestedClass, instance);
+            logger.debug("Created service instance for {}", requestedClass.getName());
             return (T) instance;
 
         } catch (Exception e) {

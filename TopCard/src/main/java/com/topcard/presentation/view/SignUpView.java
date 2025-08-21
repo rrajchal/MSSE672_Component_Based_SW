@@ -1,6 +1,7 @@
 package com.topcard.presentation.view;
 
 import com.topcard.presentation.common.Constants;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ import java.awt.event.WindowAdapter;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class SignUpView {
 
     // Dialog for displaying the sign-up view
@@ -33,10 +35,14 @@ public class SignUpView {
     private JButton signUpButton;
     private JLabel loginLink;
 
-    /**
-     * Constructor to initialize the sign-up view.
-     */
-    public SignUpView(JFrame parentFrame) {
+//    /**
+//     * Constructor to initialize the sign-up view.
+//     */
+//    public SignUpView(JFrame parentFrame) {
+//        initComponents(parentFrame);
+//    }
+
+    public void setParentFrame(JFrame parentFrame) {
         initComponents(parentFrame);
     }
 

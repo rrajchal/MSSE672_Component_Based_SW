@@ -2,10 +2,12 @@ package com.topcard.service;
 
 import com.topcard.domain.Player;
 import com.topcard.service.game.GameService;
+import com.topcard.service.player.PlayerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -28,13 +30,16 @@ public class GameServiceTest {
     private Player player3;
     private List<Player> initialPlayers;
 
+    @Autowired
+    PlayerService playerService;
+
     @Before
     public void setUp() {
         player1 = new Player("username1", "password", "firstName1", "lastName1", LocalDate.of(2000, 1, 1));
         player2 = new Player("username2", "password", "firstName2", "lastName2", LocalDate.of(2000, 2, 1));
         player3 = new Player("username3", "password", "firstName3", "lastName3", LocalDate.of(2000, 3, 1));
         initialPlayers = Arrays.asList(player1, player2, player3);
-        gameService = new GameService(initialPlayers);
+        gameService = new GameService(playerService, initialPlayers);
     }
 
     @Test

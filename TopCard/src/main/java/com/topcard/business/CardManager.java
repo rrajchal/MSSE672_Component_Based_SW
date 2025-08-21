@@ -5,6 +5,8 @@ import com.topcard.domain.Deck;
 import com.topcard.service.card.CardService;
 import com.topcard.service.card.ICardService;
 import com.topcard.service.factory.ServiceFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * CardManager is responsible for managing card-related operations.
@@ -16,14 +18,17 @@ import com.topcard.service.factory.ServiceFactory;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class CardManager {
     private final ICardService cardService;
 
     /**
      * Constructs a new CardManager and initializes the card service.
      */
-    public CardManager() {
-        this.cardService = ServiceFactory.createService(CardService.class);
+    @Autowired
+    public CardManager(ICardService cardService) {
+        this.cardService = cardService;
+        //this.cardService = ServiceFactory.createService(CardService.class);
     }
 
     /**

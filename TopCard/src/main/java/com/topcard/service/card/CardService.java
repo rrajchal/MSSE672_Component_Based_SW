@@ -2,6 +2,7 @@ package com.topcard.service.card;
 
 import com.topcard.domain.Card;
 import com.topcard.domain.Deck;
+import org.springframework.stereotype.Service;
 
 /**
  * CardService is a service class that implements the ICardService interface.
@@ -9,12 +10,13 @@ import com.topcard.domain.Deck;
  * This includes drawing cards and shuffling the deck.
  *
  */
+@Service
 public class CardService implements ICardService {
-    private Deck deck;
+    private Deck deck = new Deck();
 
-    public CardService() {
-        this.deck = new Deck();  // Initialize the deck
-    }
+//    public CardService() {
+//        this.deck = new Deck();  // Initialize the deck
+//    }
 
     @Override
     public Card drawCard() {

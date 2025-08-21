@@ -2,6 +2,7 @@ package com.topcard.business;
 
 import com.topcard.domain.Card;
 import com.topcard.domain.Deck;
+import com.topcard.service.card.ICardService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,11 +10,12 @@ import static org.junit.Assert.*;
 
 public class CardManagerTest {
 
+    ICardService cardService;
     private CardManager cardManager;
 
     @Before
     public void setUp() {
-        cardManager = new CardManager();
+        cardManager = new CardManager(cardService);
 
         // Reset the deck before each test
         cardManager.createDeck();

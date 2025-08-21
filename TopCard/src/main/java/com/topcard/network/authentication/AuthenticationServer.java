@@ -6,6 +6,7 @@ import com.topcard.network.game.GameMessage;
 import com.topcard.presentation.common.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -25,12 +26,12 @@ public class AuthenticationServer {
 
     private static final Logger logger = LogManager.getLogger(AuthenticationServer.class);
 
-    private final int authPort;
+    private int authPort;
     private static final int THREAD_POOL_SIZE = 4;
     private static final int CLIENT_SOCKET_READ_TIMEOUT_MS = 5000; // 5-second timeout for client reads
 
     private final ExecutorService authThreadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-    private final PlayerManager playerManager = new PlayerManager();
+    private final PlayerManager playerManager;
     private ServerSocket serverSocket;
 
     // For error handling and tracking failed login attempts
@@ -39,12 +40,15 @@ public class AuthenticationServer {
     private static final long LOCKOUT_DURATION_MS = 60 * 1000; // 60 seconds lockout
     private static final ConcurrentHashMap<String, Long> lockedOutUsers = new ConcurrentHashMap<>();
 
-    public AuthenticationServer(int authPort) {
-        this.authPort = authPort;
-    }
-
     public AuthenticationServer() {
         this.authPort = Constants.AUTH_PORT;
+        // Initialize Spring context
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("com.topcard");
+        context.refresh();
+
+        // Retrieve PlayerManager from Spring
+        this.playerManager = context.getBean(PlayerManager.class);
     }
 
     /**
@@ -242,5 +246,9 @@ public class AuthenticationServer {
             }
             return false;
         }
+    }
+
+    public void setAuthPort(int authPort) {
+        this.authPort = authPort;
     }
 }
