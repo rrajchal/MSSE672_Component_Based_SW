@@ -47,26 +47,25 @@ public class OptionsController {
     private boolean isOnline; // boolean flag to track online status
 
     private PlayerManager playerManager;
-    private ApplicationContext context;
-
     private Player player = null;
 
-//    /**
-//     * Constructor to initialize the OptionsController.
-//     *
-//     * @param optionsView The view associated with this controller.
-//     * @param username The username of the logged-in player.
-//     * @param isOnline A flag indicating whether the application is running in online mode.
-//     * @param desktopPane The desktop pane for managing internal frames.
-//     */
-//    @Autowired
-//    public OptionsController(OptionsView optionsView, String username, boolean isOnline, JDesktopPane desktopPane, PlayerManager playerManager) {
-//        this.optionsView = optionsView;
-//        this.isOnline = isOnline; // Store the online status
-//        this.desktopPane = desktopPane;
-//        this.playerManager = playerManager;
-//        initController(username);
-//    }
+    // Inject controllers and views directly
+    private final AddPlayerController addPlayerController;
+    private final AddPlayerView addPlayerView;
+    private final UpdateController updateController;
+    private final UpdateView updateView;
+    private final GameView gameView;
+
+    @Autowired
+    public OptionsController(PlayerManager playerManager, AddPlayerController addPlayerController, AddPlayerView addPlayerView,
+                             UpdateController updateController, UpdateView updateView, GameView gameView) {
+        this.playerManager = playerManager;
+        this.addPlayerController = addPlayerController;
+        this.addPlayerView = addPlayerView;
+        this.updateController = updateController;
+        this.updateView = updateView;
+        this.gameView = gameView;
+    }
 
     public void initialize(OptionsView optionsView, String username, boolean isOnline, JDesktopPane desktopPane) {
         this.optionsView = optionsView;
@@ -111,7 +110,7 @@ public class OptionsController {
 
         Platform.runLater(() -> {
             try {
-                GameView gameView = new GameView(players, context);
+                gameView.setPlayers(players);
                 Stage stage = new Stage();
                 gameView.start(stage);
             } catch (Exception e) {
@@ -176,13 +175,9 @@ public class OptionsController {
      * @param username the username of the authenticated player
      */
     private void handleUpdate(String username) {
-        UpdateView updateView = context.getBean(UpdateView.class);
         updateView.initializeWindow();
         boolean isAdmin = player.isAdmin();
-
-        UpdateController updateController = context.getBean(UpdateController.class);
         updateController.initialize(updateView, username, isAdmin, desktopPane);
-
         InternalFrame.addInternalFrame(desktopPane, "Update", updateView.getUpdatePanel(), 700, 400, true);
         attachWindowListener(updateView);
     }
@@ -193,9 +188,7 @@ public class OptionsController {
      */
     private void handleAddPlayer() {
         disableOptionsView();
-        AddPlayerView addPlayerView = context.getBean(AddPlayerView.class);
         addPlayerView.initializeWindow();
-        AddPlayerController addPlayerController = context.getBean(AddPlayerController.class);
         addPlayerController.initialize(addPlayerView);
         attachWindowListener(addPlayerView);
         addPlayerView.setVisible(true);
@@ -247,10 +240,5 @@ public class OptionsController {
     @Autowired
     public void setPlayerManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
-    }
-
-    @Autowired
-    public void setApplicationContext(ApplicationContext context) {
-        this.context = context;
     }
 }

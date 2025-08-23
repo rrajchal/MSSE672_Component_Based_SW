@@ -14,10 +14,6 @@ import org.springframework.stereotype.Service;
 public class CardService implements ICardService {
     private Deck deck = new Deck();
 
-//    public CardService() {
-//        this.deck = new Deck();  // Initialize the deck
-//    }
-
     @Override
     public Card drawCard() {
         return deck.deal();

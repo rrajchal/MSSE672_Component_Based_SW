@@ -64,7 +64,7 @@ public class GameController {
     private int betAmount = 0;
     private List<Player> players;
 
-    private GameManager gameManager;
+    private final GameManager gameManager;
     private ImageView[][] playerCards;
 
     // Add a new field for the sound effect
@@ -74,6 +74,11 @@ public class GameController {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    public GameController(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 
     /**
      * Initializes the controller. This method is automatically called after the FXML has been loaded.
@@ -139,8 +144,6 @@ public class GameController {
             // Start the game and deal cards
             IGameService gameService = context.getBean(IGameService.class);
             gameService.setPlayers(players);
-            gameManager = new GameManager(gameService);
-
             gameManager.startGame();
             displayCardsSequentially();
         }

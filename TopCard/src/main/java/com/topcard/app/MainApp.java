@@ -1,5 +1,6 @@
 package com.topcard.app;
 
+import com.topcard.config.AppConfig;
 import com.topcard.presentation.common.Constants;
 import com.topcard.presentation.common.InternalFrame;
 import com.topcard.presentation.controller.LoginController;
@@ -7,7 +8,10 @@ import com.topcard.presentation.view.LoginView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -26,28 +30,37 @@ import java.util.Properties;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component   // Marks this class as a Spring-managed bean.
 public class MainApp {
 
     private static final Logger logger = LogManager.getLogger(MainApp.class);
 
-    private static final JDesktopPane desktopPane = new JDesktopPane(); // Main desktop pane
+    private JDesktopPane desktopPane = new JDesktopPane(); // Main desktop pane
 
-    private static AnnotationConfigApplicationContext context;   // Spring Context
+    @Autowired  // Injects required dependencies automatically by type and ensures loose coupling
+    private LoginView loginView;
+    @Autowired
+    private LoginController loginController;
+
+    // Represents the Spring IoC container: Manages bean creation, configuration, and lifecycle.
+    @Autowired
+    private ApplicationContext context;
 
     /**
      * The main method serves as the entry point of the application.
-     * It initializes the login frame and sets the debug mode based on the configuration.
-     *
-     * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Initialize Spring Context
-        context = new AnnotationConfigApplicationContext();
-        context.scan("com.topcard");
-        context.refresh();
-        // Creates Desktop Pane and Menus
-        createDesktopPaneAndMenu();
-        openLogin();
+        // Start the Spring context and retrieve the MainApp bean
+        SwingUtilities.invokeLater(() -> {
+            // Initialize the Spring application context using the AppConfig class.
+            // AppConfig is annotated with @Configuration and @ComponentScan, so it sets up the entire application context.
+            ApplicationContext appContext = new AnnotationConfigApplicationContext(AppConfig.class);
+            // Retrieve the MainApp bean from the context. Spring automatically wires its dependencies
+            // (like LoginController and LoginView) as defined in AppConfig and scanned components.
+            MainApp mainApp = appContext.getBean(MainApp.class);
+            mainApp.createDesktopPaneAndMenu();
+            mainApp.openLogin();
+        });
     }
 
     /**
@@ -55,7 +68,7 @@ public class MainApp {
      * Sets up the File, Debug, and About menus with their respective menu items.
      * Adds action listeners to the menu items and initializes the login view.
      */
-    private static void createDesktopPaneAndMenu() {
+    private void createDesktopPaneAndMenu() {
         // Create the main application frame
         JFrame frame = new JFrame("TopCard Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,6 +77,7 @@ public class MainApp {
         frame.setLocationRelativeTo(null); // Center the frame on the monitor
 
         // Create and add a desktop pane to the main frame
+        desktopPane = new JDesktopPane();
         frame.add(desktopPane);
         frame.setVisible(true); // Make the main frame visible
 
@@ -113,14 +127,14 @@ public class MainApp {
         // Use Spring-managed LoginController
         LoginView loginView =context.getBean(LoginView.class);
         LoginController loginController = context.getBean(LoginController.class);
-        loginController.setLoginView(loginView); // Inject manually
-        loginController.setDesktopPane(desktopPane); // Inject manually
+        loginController.setLoginView(loginView);
+        loginController.setDesktopPane(desktopPane);
     }
 
     /**
      * Opens the login view as an internal frame if not already opened.
      */
-    private static void openLogin() {
+    private void openLogin() {
         // Check if login view is already open
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
             if (frame.getTitle().equals("Login")) {
@@ -134,9 +148,7 @@ public class MainApp {
             }
         }
 
-        LoginView loginView = context.getBean(LoginView.class);
         loginView.initializeWindow();
-        LoginController loginController = context.getBean(LoginController.class);
         loginController.setLoginView(loginView);
         loginController.setDesktopPane(desktopPane);
         InternalFrame.addInternalFrame(desktopPane, "Login", loginView.getLoginPanel(), 400, 300, false);
@@ -147,7 +159,7 @@ public class MainApp {
      * This information includes an overview of the game rules, points calculation,
      * and player registration, authentication, profile viewing, and updating.
      */
-    private static void showAboutGame() {
+    private void showAboutGame() {
         JEditorPane editorPane = new JEditorPane("text/html", Constants.ABOUT_GAME_INFO);
         editorPane.setEditable(false);
         editorPane.setCaretPosition(0);
@@ -166,7 +178,7 @@ public class MainApp {
      *
      * @param level the desired log level (e.g., "DEBUG", "ERROR", "INFO")
      */
-    public static void updateLoggingLevel(String level) {
+    public void updateLoggingLevel(String level) {
         Path log4jConfigFilePath = Paths.get("config", "log4j2.properties");
         Properties props = new Properties();
 

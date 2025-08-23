@@ -51,7 +51,7 @@ public class AuthenticationServerTest {
         context.scan("com.topcard");
         context.refresh();
 
-        authenticationServer = new AuthenticationServer();
+        authenticationServer = new AuthenticationServer(mockPlayerManager);
 
         // copied code from other test class.
         testPlayers = List.of(

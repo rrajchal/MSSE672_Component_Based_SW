@@ -7,6 +7,7 @@ import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.SignUpView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.event.WindowAdapter;
@@ -37,17 +38,11 @@ public class SignUpController {
 
     PlayerManager playerManager;
 
-//    /**
-//     * Constructor to initialize the sign-up controller with the given sign-up view and login frame.
-//     *
-//     * @param signUpView the sign-up view
-//     * @param loginFrame the login frame
-//     */
-//    public SignUpController(SignUpView signUpView, JFrame loginFrame) {
-//        this.signUpView = signUpView;
-//        this.loginFrame = loginFrame;
-//        initController();
-//    }
+    // Constructor to inject PlayerManager
+    @Autowired
+    public SignUpController(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
 
     public void initialize(SignUpView signUpView, JFrame parentFrame) {
         this.signUpView = signUpView;

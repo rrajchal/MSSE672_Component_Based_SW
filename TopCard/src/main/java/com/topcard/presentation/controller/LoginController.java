@@ -46,21 +46,22 @@ public class LoginController extends JFrame {
     private JDesktopPane desktopPane;
     private PlayerManager playerManager;  // Injected by Spring
 
-    @Autowired
-    private ApplicationContext context;
+    // Inject controllers and views directly
+    private final OptionsController optionsController;
+    private final SignUpController signUpController;
+    private final OptionsView optionsView;
+    private final SignUpView signUpView;
 
-//    /**
-//     * Constructor to initialize the login controller with the given login view.
-//     *
-//     * @param loginView the login view
-//     */
-//    public LoginController(LoginView loginView, JDesktopPane desktopPane, PlayerManager playerManager) {
-//        this.loginView = loginView;
-//        this.desktopPane = desktopPane;
-//        this.playerManager = playerManager;
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        initController();
-//    }
+    // Constructor to initialize the login controller with the given login view.
+    @Autowired
+    public LoginController(OptionsController optionsController, SignUpController signUpController, OptionsView optionsView,
+                           SignUpView signUpView, PlayerManager playerManager) {
+        this.optionsController = optionsController;
+        this.signUpController = signUpController;
+        this.optionsView = optionsView;
+        this.signUpView = signUpView;
+        this.playerManager = playerManager;
+    }
 
     /**
      * Initializes the controller by setting up the action listeners.
@@ -149,10 +150,7 @@ public class LoginController extends JFrame {
             loginFrame.dispose();
         }
 
-        OptionsView optionsView = context.getBean(OptionsView.class);
-        OptionsController optionsController = context.getBean(OptionsController.class);
         optionsController.initialize(optionsView, username, isOnline, desktopPane);
-
         InternalFrame.addInternalFrame(desktopPane, "Choose an Option", optionsView.getOptionsPanel(), 400, 200, false);
     }
 
@@ -225,12 +223,8 @@ public class LoginController extends JFrame {
      * It opens the SignUpView and disables the Login frame.
      */
     private void handleSignUp() {
-        SignUpView signUpView = context.getBean(SignUpView.class);
         signUpView.setParentFrame((JFrame) loginView.getLoginPanel().getTopLevelAncestor());
-
-        SignUpController signUpController = context.getBean(SignUpController.class);
         signUpController.initialize(signUpView, (JFrame) loginView.getLoginPanel().getTopLevelAncestor());
-
         signUpView.show();
     }
 

@@ -16,6 +16,15 @@ CP+=":$BASE_DIR/lib/hibernate-commons-annotations-6.0.6.Final.jar"
 CP+=":$BASE_DIR/lib/mysql-connector-j-8.0.33.jar"
 CP+=":$BASE_DIR/lib/byte-buddy-1.12.23.jar"
 CP+=":$BASE_DIR/lib/antlr4-runtime-4.9.3.jar"
+CP+=":$BASE_DIR/lib/commons-logging-1.3.1.jar"
+
+# Spring Framework 6.1.21 core JARs
+CP+=":lib/spring-context-6.1.21.jar"
+CP+=":lib/spring-beans-6.1.21.jar"
+CP+=":lib/spring-core-6.1.21.jar"
+CP+=":lib/spring-aop-6.1.21.jar"
+CP+=":lib/spring-expression-6.1.21.jar"
+
 
 echo "Starting TopCard Server..."
 java -cp "$CP" com.topcard.network.game.GameServer

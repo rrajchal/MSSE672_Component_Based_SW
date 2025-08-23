@@ -2,6 +2,7 @@ package com.topcard.network.game;
 
 import com.topcard.business.GameManager;
 import com.topcard.business.PlayerManager;
+import com.topcard.config.GameServerConfig;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import com.topcard.presentation.common.Constants;
@@ -61,10 +62,9 @@ public class GameServer {
      * Main entry point for the server.
      */
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.topcard");
-        GameServer server = applicationContext.getBean(GameServer.class);
-        try {
-            server.start();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(GameServerConfig.class)) {
+            GameServer gameServer = context.getBean(GameServer.class);
+            gameServer.start();
         } catch (Exception e) {
             logger.error("Error with Game Server", e);
         }

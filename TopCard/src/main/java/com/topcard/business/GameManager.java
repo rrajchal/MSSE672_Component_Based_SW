@@ -5,6 +5,7 @@ import com.topcard.domain.Player;
 import com.topcard.service.factory.ServiceFactory;
 import com.topcard.service.game.GameService;
 import com.topcard.service.game.IGameService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,13 +16,15 @@ import java.util.List;
  * update player profiles, determine winners, and display winners.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 06/30/2025
+ * Date: 08/22/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
 public class GameManager {
-    private IGameService gameService;
+    private final IGameService gameService;
 
+    @Autowired
     public GameManager(IGameService gameService) {
         this.gameService = gameService;
     }
@@ -110,7 +113,11 @@ public class GameManager {
         gameService.displayWinners(winners);
     }
 
+    /**
+     * Sets players
+     * @param players the players playing game
+     */
     public void setPlayers(List<Player> players) {
-         this.gameService = ServiceFactory.createService(GameService.class, players);
+        gameService.setPlayers(players);
     }
 }

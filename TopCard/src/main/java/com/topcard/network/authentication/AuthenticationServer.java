@@ -1,5 +1,6 @@
 package com.topcard.network.authentication;
 
+import com.topcard.config.AuthenticationServerConfig;
 import com.topcard.domain.Player;
 import com.topcard.business.PlayerManager;
 import com.topcard.network.game.GameMessage;
@@ -7,6 +8,7 @@ import com.topcard.presentation.common.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Multithreaded authentication server for handling login requests.
  */
+@Component
 public class AuthenticationServer {
 
     private static final Logger logger = LogManager.getLogger(AuthenticationServer.class);
@@ -40,23 +43,18 @@ public class AuthenticationServer {
     private static final long LOCKOUT_DURATION_MS = 60 * 1000; // 60 seconds lockout
     private static final ConcurrentHashMap<String, Long> lockedOutUsers = new ConcurrentHashMap<>();
 
-    public AuthenticationServer() {
+    public AuthenticationServer(PlayerManager playerManager) {
+        this.playerManager = playerManager;
         this.authPort = Constants.AUTH_PORT;
-        // Initialize Spring context
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.scan("com.topcard");
-        context.refresh();
-
-        // Retrieve PlayerManager from Spring
-        this.playerManager = context.getBean(PlayerManager.class);
     }
 
     /**
      * Main entry point for starting AuthenticationServer.
      */
     public static void main(String[] args) {
-        try {
-            new AuthenticationServer().start();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AuthenticationServerConfig.class)) {
+            AuthenticationServer authServer = context.getBean(AuthenticationServer.class);
+            authServer.start();
         } catch (Exception e) {
             logger.error("Error starting Authentication Server", e);
         }

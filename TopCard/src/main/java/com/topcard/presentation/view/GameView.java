@@ -10,7 +10,10 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,21 +28,18 @@ import java.util.Objects;
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
+@Component
+@Scope("prototype")
 public class GameView {
 
     private static final Logger logger = LogManager.getLogger(GameView.class);
 
-    private final List<Player> players;
+    private List<Player> players;
 
     private final ApplicationContext context;
 
-    /**
-     * Constructs a new GameView with the specified list of players.
-     *
-     * @param players the list of players participating in the game
-     */
-    public GameView(List<Player> players, ApplicationContext context) {
-        this.players = players;
+    @Autowired
+    public GameView(ApplicationContext context) {
         this.context = context;
     }
 
@@ -81,5 +81,9 @@ public class GameView {
         } catch (Exception e) {
             logger.error("Failed to load FXML file: " + e.getMessage());
         }
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 }

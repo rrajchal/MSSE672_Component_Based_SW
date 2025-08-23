@@ -7,6 +7,7 @@ import com.topcard.presentation.common.Validation;
 import com.topcard.presentation.view.UpdateView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.Color;
@@ -36,19 +37,12 @@ public class UpdateController {
     private String username;
     private JDesktopPane desktopPane;
 
-//    /**
-//     * Constructor to initialize the update controller with the given update view and admin status.
-//     *
-//     * @param updateView the update view
-//     * @param isAdmin whether the user is an admin
-//     */
-//    public UpdateController(UpdateView updateView, String username, boolean isAdmin, JDesktopPane desktopPane) {
-//        this.updateView = updateView;
-//        this.username = username;
-//        this.desktopPane = desktopPane;
-//        this.isAdmin = isAdmin;
-//        initController();
-//    }
+
+    // Constructor to inject PlayerManager
+    @Autowired
+    public UpdateController(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
 
     public void initialize(UpdateView updateView, String username, boolean isAdmin, JDesktopPane desktopPane) {
         this.updateView = updateView;

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * and retrieve card-related information.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 06/30/2025
+ * Date: 08/22/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
@@ -28,7 +28,6 @@ public class CardManager {
     @Autowired
     public CardManager(ICardService cardService) {
         this.cardService = cardService;
-        //this.cardService = ServiceFactory.createService(CardService.class);
     }
 
     /**

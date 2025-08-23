@@ -33,10 +33,6 @@ public class PlayerService implements IPlayerService {
 
     private final IPlayerDao playerDao;
 
-//    public PlayerService() {
-//        this.playerDao = new PlayerDaoImpl(); // Instantiate the DAO implementation
-//    }
-
     @Autowired
     public PlayerService(IPlayerDao playerDao) {
         this.playerDao = playerDao;

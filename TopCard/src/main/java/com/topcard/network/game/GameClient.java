@@ -123,7 +123,8 @@ public class GameClient {
         Platform.runLater(() -> {
             logger.info("Launching GameView...");
             try {
-                GameView view = new GameView(players, context);
+                GameView view = new GameView(context);
+                view.setPlayers(players);
                 Stage stage = new Stage();
                 view.start(stage);
             } catch (Exception ex) {

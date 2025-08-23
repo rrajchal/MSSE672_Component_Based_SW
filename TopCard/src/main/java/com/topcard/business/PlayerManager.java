@@ -3,8 +3,6 @@ package com.topcard.business;
 import com.topcard.domain.Player;
 import com.topcard.service.player.IPlayerService;
 import com.topcard.service.player.PlayerService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +14,13 @@ import java.util.List;
  * It interacts with the IPlayerService to add, remove, update, and retrieve player information.
  * <p>
  * Author: Rajesh Rajchal
- * Date: 06/30/2025
+ * Date: 08/22/2025
  * Subject: MSSE 672 Component-Based Software Development
  * </p>
  */
 @Component
 public class PlayerManager {
 
-    private static final Logger logger = LogManager.getLogger(PlayerManager.class);
     private final IPlayerService playerService;
 
     /**
@@ -31,7 +28,6 @@ public class PlayerManager {
      */
     @Autowired
     public PlayerManager(IPlayerService playerService) {
-        //this.playerService = ServiceFactory.createService(PlayerService.class);
         this.playerService = playerService;
     }
 
