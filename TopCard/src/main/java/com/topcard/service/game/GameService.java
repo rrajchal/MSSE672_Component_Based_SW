@@ -121,4 +121,9 @@ public class GameService implements IGameService {
         }
         return players;
     }
+
+    public IPlayerService getPlayerService() {
+        return playerService;
+    }
+
 }

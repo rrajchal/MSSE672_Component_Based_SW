@@ -2,6 +2,8 @@ package com.topcard.service.game;
 
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
+import com.topcard.service.player.IPlayerService;
+
 import java.util.List;
 
 /**
@@ -97,4 +99,6 @@ public interface IGameService {
     List<Player> getPlayers();
 
     void setPlayers(List<Player> players);
+
+    IPlayerService getPlayerService();
 }
