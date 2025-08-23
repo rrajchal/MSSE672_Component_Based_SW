@@ -1,22 +1,26 @@
 package com.topcard.business;
 
+import com.topcard.config.SpringAppConfigForTest;
 import com.topcard.domain.Card;
 import com.topcard.domain.Deck;
-import com.topcard.service.card.ICardService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = SpringAppConfigForTest.class)
 public class CardManagerTest {
 
-    ICardService cardService;
+    @Autowired
     private CardManager cardManager;
 
     @Before
     public void setUp() {
-        cardManager = new CardManager(cardService);
-
         // Reset the deck before each test
         cardManager.createDeck();
     }

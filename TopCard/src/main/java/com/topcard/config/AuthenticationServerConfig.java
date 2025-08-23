@@ -4,6 +4,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
+/**
+ * Configures Spring to scan authentication and player-related packages.
+ * Excludes CardManager and GameManager to avoid loading unrelated logic.
+ */
 @Configuration
 @ComponentScan(basePackages = {
         "com.topcard.network.authentication", // The AuthenticationServer

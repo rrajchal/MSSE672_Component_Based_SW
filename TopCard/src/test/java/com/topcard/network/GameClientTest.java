@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
@@ -46,7 +47,7 @@ public class GameClientTest {
     // Helper to reset the singleton instance using reflection
     private void setSingletonInstanceToNull() {
         try {
-            java.lang.reflect.Field instanceField = GameClient.class.getDeclaredField("instance");
+            Field instanceField = GameClient.class.getDeclaredField("instance");
             instanceField.setAccessible(true);
             instanceField.set(null, null);
         } catch (NoSuchFieldException | IllegalAccessException e) {

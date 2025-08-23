@@ -8,8 +8,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for verifying Spring bean initialization in AppConfig.
+ * Ensures all service beans are correctly instantiated and wired.
+ */
 class AppConfigTest {
 
+    // Validates that ICardService, IPlayerService, and IGameService beans are properly created and injected by the Spring context.
     @Test
     void testBeanInitialization() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class)) {

@@ -46,12 +46,11 @@ public class AuthenticationServerTest {
 
     @BeforeAll
     void setUpAll() throws Exception {
-        AnnotationConfigApplicationContext context =
-                new org.springframework.context.annotation.AnnotationConfigApplicationContext();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.scan("com.topcard");
         context.refresh();
 
-        authenticationServer = new AuthenticationServer(mockPlayerManager);
+        authenticationServer = context.getBean(AuthenticationServer.class);
 
         // copied code from other test class.
         testPlayers = List.of(

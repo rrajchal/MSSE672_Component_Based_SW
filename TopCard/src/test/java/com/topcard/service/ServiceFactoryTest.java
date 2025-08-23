@@ -1,5 +1,7 @@
 package com.topcard.service;
 
+import com.topcard.config.SpringAppConfigForTest;
+import com.topcard.dao.player.PlayerDaoImpl;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import com.topcard.domain.PlayerTest;
@@ -12,29 +14,40 @@ import com.topcard.service.player.IPlayerService;
 import com.topcard.service.player.PlayerService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = SpringAppConfigForTest.class)
 public class ServiceFactoryTest {
+
+    @Autowired
+    PlayerDaoImpl playerDao;
 
     @Before
     public void setUp() {
+        // playerDao = new PlayerDaoImpl();  No need becasue of @Autowire
         ServiceFactory.reset();
     }
 
     @Test
     public void testCreateService() {
-        List<Player> players = getPlayers();
-        IGameService gameService = ServiceFactory.createService(GameService.class, players);
+        IPlayerService playerService = ServiceFactory.createService(PlayerService.class, playerDao);
+        IGameService gameService = ServiceFactory.createService(GameService.class, playerService);
         assertNotNull(gameService);
         assertInstanceOf(GameService.class, gameService);
     }
 
     @Test
     public void testCreatePlayerService() {
-        IPlayerService playerService = ServiceFactory.createService(PlayerService.class);
+        IPlayerService playerService = ServiceFactory.createService(PlayerService.class, playerDao);
         assertNotNull(playerService);
         assertInstanceOf(PlayerService.class, playerService);
     }
@@ -48,12 +61,13 @@ public class ServiceFactoryTest {
 
     @Test
     public void testGameServiceStartGame() {
+        IPlayerService playerService = ServiceFactory.createService(PlayerService.class, playerDao);
         ICardService cardService = ServiceFactory.createService(CardService.class);
         List<Player> players = getPlayers();
-        IGameService gameService = ServiceFactory.createService(GameService.class, players);
+        IGameService gameService = ServiceFactory.createService(GameService.class, playerService);
+        gameService.setPlayers(players);
         assertNotNull(gameService);
         gameService.startGame();
-
         assertEquals(3, players.get(0).getHand().length);  // three cards each player
         assertTrue(cardService.getCardsValue(players.get(0).getHand()) > 2); // Minimum total value of all three cards is at least 3.
     }
@@ -96,7 +110,9 @@ public class ServiceFactoryTest {
     @Test
     public void testConstructorWithArguments() {
         List<Player> players = getPlayers();
-        IGameService gameService = ServiceFactory.createService(GameService.class, players);
+        IPlayerService playerService = ServiceFactory.createService(PlayerService.class, playerDao);
+        IGameService gameService = ServiceFactory.createService(GameService.class, playerService);
+        gameService.setPlayers(players);
         assertNotNull(gameService, "GameService should be instantiated with players");
         assertEquals(players.size(), gameService.getPlayers().size(), "Players should be correctly passed to GameService");
     }

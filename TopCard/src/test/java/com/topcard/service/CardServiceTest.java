@@ -2,8 +2,10 @@ package com.topcard.service;
 
 import com.topcard.domain.Card;
 import com.topcard.service.card.CardService;
+import com.topcard.service.card.ICardService;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,4 +75,14 @@ public class CardServiceTest {
         Card card = cardService.drawCard();
         assertNotNull(card); // Ensure we can draw from the new shuffled deck
     }
+
+    @Test
+    public void testCardServiceBeanIsLoadedBySpring() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(CardService.class);
+        ICardService cardService = context.getBean(ICardService.class);
+        assertNotNull(cardService);
+        assertInstanceOf(CardService.class, cardService);
+        context.close();
+    }
+
 }

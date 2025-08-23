@@ -1,9 +1,14 @@
 package com.topcard.business;
 
+import com.topcard.config.SpringAppConfigForTest;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,8 +16,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = SpringAppConfigForTest.class)
 public class GameManagerTest {
 
+    @Autowired
     private GameManager gameManager;
     private List<Player> players;
 
