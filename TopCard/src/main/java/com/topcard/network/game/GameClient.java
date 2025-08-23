@@ -1,5 +1,6 @@
 package com.topcard.network.game;
 
+import com.topcard.config.ClientConfig;
 import com.topcard.dao.player.PlayerDaoImpl;
 import com.topcard.domain.Card;
 import com.topcard.domain.Player;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -169,12 +171,18 @@ public class GameClient {
             return;
         }
 
-        new Thread(() -> {
-            try {
-                GameClient.getInstance().connect(Constants.LOCAL_HOST, player.get());
-            } catch (IOException e) {
-                logger.error("Connection error: " + e.getMessage());
-            }
-        }).start();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ClientConfig.class)) {
+            GameClient gameClient = context.getBean(GameClient.class);
+            Player authenticatedPlayer = player.get();
+            new Thread(() -> {
+                try {
+                    gameClient.connect(Constants.LOCAL_HOST, authenticatedPlayer);
+                } catch (IOException e) {
+                    logger.error("Connection error: " + e.getMessage());
+                }
+            }).start();
+        } catch (Exception e) {
+            logger.error("Error with Game Client", e);
+        }
     }
 }
